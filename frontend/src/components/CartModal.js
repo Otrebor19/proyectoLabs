@@ -1,23 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react'; // Eliminamos useState y useEffect
 import { XIcon } from '@heroicons/react/outline'; 
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate para la navegación
+import { useNavigate } from 'react-router-dom'; 
+import { CartContext } from '../context/CartContext'; // Importar el CartContext
 
 const CartModal = ({ isCartOpen, toggleCart }) => {
-  const [cart, setCart] = useState([]);
-  const navigate = useNavigate(); // Inicializa useNavigate
-
-  // Obtener los productos del carrito desde el localStorage al cargar el componente
-  useEffect(() => {
-    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    setCart(cartItems);
-  }, [isCartOpen]); // Se actualizará cada vez que se abra el carrito
-
-  // Función para eliminar un producto del carrito
-  const removeFromCart = (producto_id) => {
-    const updatedCart = cart.filter(item => item.producto_id !== producto_id);
-    setCart(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart)); // Actualiza el localStorage
-  };
+  const { cartItems, removeFromCart } = useContext(CartContext); // Eliminamos getTotalItemsInCart porque no se está usando
+  const navigate = useNavigate();
 
   // Función para redirigir a la página del carrito
   const handleViewCart = () => {
@@ -44,8 +32,8 @@ const CartModal = ({ isCartOpen, toggleCart }) => {
 
         {/* Lista de productos en el carrito */}
         <div className="mb-4 space-y-4 flex-grow">
-          {cart.length > 0 ? (
-            cart.map((product) => (
+          {cartItems.length > 0 ? (
+            cartItems.map((product) => (
               <div key={product.producto_id} className="flex justify-between items-center">
                 <div className="flex items-center">
                   <img 
@@ -61,7 +49,7 @@ const CartModal = ({ isCartOpen, toggleCart }) => {
                 <div className="flex items-center">
                   <span className="text-[14px] font-bold text-white">{product.precio} BOB</span>
                   <button
-                    onClick={() => removeFromCart(product.producto_id)}
+                    onClick={() => removeFromCart(product.producto_id)} // Eliminar producto
                     className="ml-2 text-red-500 hover:text-red-700"
                   >
                     <XIcon className="h-5 w-5" />
@@ -78,7 +66,7 @@ const CartModal = ({ isCartOpen, toggleCart }) => {
         <div className="space-y-2 mt-auto">
           <button 
             className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-700"
-            onClick={handleViewCart} // Llama a handleViewCart al hacer clic
+            onClick={handleViewCart}
           >
             Ver Carrito
           </button>

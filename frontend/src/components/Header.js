@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import logo from '../assets/logo.png'; // Asegúrate de que tu logo esté en la carpeta assets
 import { ShoppingCartIcon } from '@heroicons/react/outline'; // Importar íconos
 import CartModal from './CartModal'; // Importar el modal del carrito
 import LoginModal from './LoginModal'; // Importar el modal de inicio de sesión
+import { CartContext } from '../context/CartContext';
 
 const Header = ({ removeFromCart }) => {
   const [isOpen, setIsOpen] = useState(false); // Estado para controlar el menú desplegable
@@ -10,7 +11,7 @@ const Header = ({ removeFromCart }) => {
   const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar la contraseña
   const [isCartOpen, setIsCartOpen] = useState(false); // Estado para controlar el modal del carrito
   const [cartItemsCount, setCartItemsCount] = useState(0); // Estado para contar los productos en el carrito
-
+  const { getTotalItemsInCart } = useContext(CartContext);
   // Función para abrir/cerrar el menú de navegación
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -90,11 +91,12 @@ const Header = ({ removeFromCart }) => {
               Iniciar sesión
             </button>
             
-            {/* Icono del carrito */}
-            <button className="relative" onClick={toggleCart}>
+            
+           {/* Icono del carrito */}
+           <button className="relative" onClick={toggleCart}>
               <ShoppingCartIcon className="h-8 w-8 text-white hover:text-green-400" />
               <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full h-4 w-4 flex items-center justify-center text-xs">
-                {cartItemsCount} {/* Mostrar el número total de productos en el carrito */}
+                {getTotalItemsInCart()} {/* Mostrar el número total de productos en el carrito */}
               </span>
             </button>
           </div>

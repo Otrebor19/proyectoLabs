@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
+
 import { fetchProductoById, fetchRelatedProducts } from '../services/api'; // Función de la API
 import Slider from 'react-slick'; // Importamos el carrusel
 import ProductCard from '../components/ProductCard'; // Componente para mostrar productos relacionados
+import { CartContext } from '../context/CartContext'; // Importar el contexto del carrito
 
 const ProductDetailPage = () => {
   const { id } = useParams(); // Obtener el ID del producto de la URL
   const [product, setProduct] = useState(null); // Estado para almacenar el producto
   const [relatedProducts, setRelatedProducts] = useState([]); // Estado para almacenar productos relacionados
   const [rating, setRating] = useState(0); // Estado para la calificación
+  const { addToCart: addProductToCart, cart = [] } = useContext(CartContext); // Extraer addToCart y el carrito del contexto con un valor predeterminado como arreglo vacío
+  const [addedToCart, setAddedToCart] = useState(false); // Estado para controlar si el producto ha sido añadido al carrito
 
   useEffect(() => {
     // Obtener el producto por ID cuando se monta el componente
@@ -35,6 +39,19 @@ const ProductDetailPage = () => {
     getRelatedProducts();
   }, [id]);
 
+  // Verificar si el producto ya está en el carrito
+  useEffect(() => {
+    if (product && cart && cart.length > 0 && cart.some((item) => item.producto_id === product.producto_id)) {
+      setAddedToCart(true);
+    }
+  }, [cart, product]);
+
+  // Función para agregar el producto al carrito
+  const handleAddToCart = () => {
+    addProductToCart(product); // Llamar a la función del contexto para añadir al carrito
+    setAddedToCart(true); // Cambiar el texto del botón
+  };
+
   // Función para manejar la calificación de estrellas
   const handleRating = (rate) => {
     setRating(rate);
@@ -56,7 +73,6 @@ const ProductDetailPage = () => {
         breakpoint: 1024, // Pantallas medianas
         settings: {
           slidesToShow: 3,
-          
         },
       },
       {
@@ -89,8 +105,16 @@ const ProductDetailPage = () => {
           <p className="text-xl mb-2 text-white ">Categoría: {product.categoria}</p>
           <p className="text-3xl text-green-500 font-bold mb-4 ">{product.precio} BOB</p>
           <p className="text-white mb-6 ">{product.descripcion}</p>
-          <button className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 ">
-            Añadir al carrito
+          
+          {/* Botón para agregar al carrito */}
+          <button
+            onClick={handleAddToCart}
+            className={`${
+              addedToCart ? 'bg-gray-500' : 'bg-btnc'
+            } hover:bg-green-700 font-subst italic text-[20px] text-white font-bold py-2 px-4 rounded-full shadow-custom-inset transition-all`}
+            disabled={addedToCart} // Desactivar el botón si ya fue añadido
+          >
+            {addedToCart ? 'Añadido al carrito' : 'BUY'}
           </button>
 
           {/* Sección de calificación con estrellas */}

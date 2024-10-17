@@ -10,6 +10,10 @@ app.use(cors({
 // Middlewares y rutas
 app.use(express.json());
 
+
+
+
+
 app.use('/public', express.static('public'));
 // Importar las rutas de la API
 const productosRoutes = require('./routes/productos');
@@ -24,6 +28,9 @@ app.use('/api/clientes', clienteRoutes);
 
 const productRoutes = require('./routes/productRoutes'); // Importar tus rutas
 app.use(productRoutes);
+
+const tokenRoutes = require('./routes/tokenRoutes');
+app.use('/api/tokens', tokenRoutes); 
 
 // Inicia el servidor
 const PORT = process.env.PORT || 3000;

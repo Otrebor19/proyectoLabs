@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { XIcon } from '@heroicons/react/outline';
 
 const CartPage = () => {
   const [cart, setCart] = useState([]);
@@ -33,82 +34,82 @@ const CartPage = () => {
   };
 
   return (
-    <section className="bg-custom-gradient text-white min-h-screen flex items-center py-16" style={{ paddingTop: '6rem' }}>
-    <div className="container mx-auto p-6 ">
-      {/* Título de la página */}
-      <h1 className="text-4xl font-bold mb-6 text-center">Carrito de Compras</h1>
+    <section className="bg-custom-gradient text-white min-h-screen flex items-center py-16 sm:py-10">
+      <div className="container mx-auto p-4 sm:p-6">
+        {/* Título de la página */}
+        <h1 className="text-3xl sm:text-4xl font-bold mb-4 text-center">Carrito de Compras</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Columna izquierda: Productos del carrito */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
-          {cart.length === 0 ? (
-            <p className="text-lg text-black">Tu carrito está vacío.</p>
-          ) : (
-            cart.map((product) => (
-              <div key={product.producto_id} className="flex justify-between items-center mb-4 border-b pb-4">
-                {/* Imagen y nombre del producto */}
-                <div className="flex items-center">
-                  <img
-                    src={product.imagen_url}
-                    alt={product.nombre}
-                    className="w-20 h-20 object-cover rounded-lg"
-                  />
-                  <div className="ml-4">
-                    <h3 className="text-xl font-semibold text-black">{product.nombre}</h3>
-                    <p className="text-sm text-black font-bold">{product.precio} BOB</p>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Columna izquierda: Productos del carrito */}
+          <div className="lg:col-span-2 bg-white p-4 sm:p-6 rounded-lg shadow-md">
+            {cart.length === 0 ? (
+              <p className="text-lg text-black">Tu carrito está vacío.</p>
+            ) : (
+              cart.map((product) => (
+                <div key={product.producto_id} className="flex justify-between items-center mb-4 border-b pb-4">
+                  {/* Imagen y nombre del producto */}
+                  <div className="flex items-center">
+                    <img
+                      src={product.imagen_url}
+                      alt={product.nombre}
+                      className="w-16 sm:w-20 h-16 sm:h-20 object-cover rounded-lg"
+                    />
+                    <div className="ml-4">
+                      <h3 className="text-base sm:text-xl font-semibold text-black">{product.nombre}</h3>
+                      <p className="text-sm text-black font-bold">{product.precio} BOB</p>
+                    </div>
                   </div>
-                </div>
 
-                {/* Controles para la cantidad */}
-                <div className="flex items-center">
+                  {/* Controles para la cantidad */}
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => updateQuantity(product.producto_id, product.quantity - 1)}
+                      className="bg-gray-200 text-gray-700 px-2 py-1 rounded-l-lg hover:bg-gray-300"
+                    >
+                      -
+                    </button>
+                    <span className="px-2 sm:px-3 py-1 bg-gray-100 text-gray-800">{product.quantity}</span>
+                    <button
+                      onClick={() => updateQuantity(product.producto_id, product.quantity + 1)}
+                      className="bg-gray-200 text-gray-700 px-2 py-1 rounded-r-lg hover:bg-gray-300"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  {/* Botón para eliminar producto */}
                   <button
-                    onClick={() => updateQuantity(product.producto_id, product.quantity - 1)}
-                    className="bg-gray-200 text-gray-700 px-2 py-1 rounded-l-lg hover:bg-gray-300"
+                    onClick={() => removeFromCart(product.producto_id)}
+                    className="text-red-500 hover:text-red-700 ml-2 sm:ml-4"
                   >
-                    -
-                  </button>
-                  <span className="px-3 py-1 bg-gray-100 text-gray-800">{product.quantity}</span>
-                  <button
-                    onClick={() => updateQuantity(product.producto_id, product.quantity + 1)}
-                    className="bg-gray-200 text-gray-700 px-2 py-1 rounded-r-lg hover:bg-gray-300"
-                  >
-                    +
+                    <XIcon className="h-5 w-5" />
                   </button>
                 </div>
-
-                {/* Botón para eliminar producto */}
-                <button
-                  onClick={() => removeFromCart(product.producto_id)}
-                  className="text-red-500 hover:text-red-700 ml-4"
-                >
-                  Eliminar
-                </button>
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* Columna derecha: Resumen del pedido */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-2xl font-semibold mb-4 text-black ">Resumen del Pedido</h2>
-          <div className="flex justify-between mb-4">
-            <span className="text-lg font-medium text-black">Total de productos:</span>
-            <span className="text-lg text-black">{cart.length} items</span>
+              ))
+            )}
           </div>
 
-          {/* Total del pedido */}
-          <div className="flex justify-between mb-4">
-            <span className="text-lg font-medium text-black">Total:</span>
-            <span className="text-lg font-bold text-black">{calculateTotal()} BOB</span>
-          </div>
+          {/* Columna derecha: Resumen del pedido */}
+          <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+            <h2 className="text-lg sm:text-2xl font-semibold mb-4 text-black">Resumen del Pedido</h2>
+            <div className="flex justify-between mb-2 sm:mb-4">
+              <span className="text-sm sm:text-lg font-medium text-black">Total de productos:</span>
+              <span className="text-sm sm:text-lg text-black">{cart.length} items</span>
+            </div>
 
-          {/* Botón de proceder con el pago */}
-          <button className="w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600">
-            Proceder con el Pago
-          </button>
+            {/* Total del pedido */}
+            <div className="flex justify-between mb-2 sm:mb-4">
+              <span className="text-sm sm:text-lg font-medium text-black">Total:</span>
+              <span className="text-sm sm:text-lg font-bold text-black">{calculateTotal()} BOB</span>
+            </div>
+
+            {/* Botón de proceder con el pago */}
+            <button className="w-full bg-green-500 text-white py-2 sm:py-3 rounded-lg hover:bg-green-600">
+              Proceder con el Pago
+            </button>
+          </div>
         </div>
       </div>
-    </div>
     </section>
   );
 };

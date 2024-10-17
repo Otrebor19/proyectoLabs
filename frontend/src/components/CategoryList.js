@@ -17,7 +17,7 @@ const CategoryList = ({ categories }) => {
                 className="inline-block mr-2 w-10 hover:color-thov" 
               />
               {/* Ajustamos el tamaño del texto según el tamaño de pantalla */}
-              <span className="text-[24px] sm:text-[15px] font-subst">
+              <span className="text-[42px] sm:text-[20px] font-subst">
                 {category.nombre_categoria}
               </span>
             </button>
