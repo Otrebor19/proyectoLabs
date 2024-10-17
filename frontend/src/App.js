@@ -1,0 +1,43 @@
+import React from 'react';
+
+import Header from './components/Header';
+import MainSection from './components/MainSection';
+import Products from './components/Products';
+import CartPage from './pages/CartPage';
+import ProductDetailPage from './pages/ProductDetailPage';
+import RegisterPage from './pages/RegisterPage';
+import { Routes, Route, useLocation } from 'react-router-dom'; // Importar useLocation
+import './App.css';
+
+function App() {
+  const location = useLocation(); // Usar useLocation para obtener la ruta actual
+
+  // Definir datos de productos
+  const hideHeaderRoutes = ['/register']; // Rutas donde no quieres mostrar el header
+
+  return (
+    <div className="App bg-custom-gradient">
+      {/* Mostrar el header solo si la ruta actual no está en hideHeaderRoutes */}
+      {!hideHeaderRoutes.includes(location.pathname) && <Header />}
+      
+      <Routes>
+        <Route
+          path="/"
+          element={(
+            <>
+              <MainSection />
+              <Products />
+            </>
+          )}
+        />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/register" element={<RegisterPage />} /> {/* Ruta de registro */}
+        <Route path="/productos/:id" element={<ProductDetailPage />} />
+        <Route path="/productos/:id/relacionados" element={<ProductDetailPage />} />
+
+      </Routes>
+    </div>
+  );
+}
+
+export default App;
