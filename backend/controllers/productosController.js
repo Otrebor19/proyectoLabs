@@ -15,7 +15,7 @@ async function getProductos(req, res) {
       console.log('No se encontraron productos en la tabla');
       res.json([]); // Respuesta vacía
     } else {
-      console.log('Productos obtenidos:', result.rows); // Mostrar productos en la consola
+     // Mostrar productos en la consola
       res.json(result.rows); // Enviar los datos de los productos al frontend
     }
   } catch (err) {

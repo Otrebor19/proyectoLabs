@@ -31,7 +31,17 @@ export const fetchProductoById = async (id) => {
   return response;
 };
 
-// En tu archivo services/api.js
+
+export const loginCliente = async (formData) => {
+  return await axios.post('http://localhost:3000/api/auth/login', {
+    correo_electronico: formData.correo_electronico,
+    contraseña: formData.contraseña,  // Asegúrate de que los nombres coincidan con los del backend
+  });
+};
+
+export const fetchTallasByProducto = async (productoId) => {
+  return await axios.get(`http://localhost:3000/api/productos/${productoId}/tallas`);
+};
 
 export const fetchRelatedProducts = async (id) => {
   try {

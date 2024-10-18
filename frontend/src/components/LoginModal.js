@@ -3,7 +3,7 @@ import { XIcon } from '@heroicons/react/outline'; // Para el ícono de cerrar
 const LoginModal = ({ isModalOpen, toggleModal, showPassword, togglePasswordVisibility }) => {
   return (
     isModalOpen && (
-      <div className="absolute backdrop-blur-sm top-16 right-10 bg-transparent shadow-sm shadow-white p-6 rounded-lg w-96">
+      <div className="absolute backdrop-blur-sm top-16 right-10 bg-transparent shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] shadow-white p-6 rounded-lg w-96">
         <h2 className="text-[62px] font-bold mb-4 text-white font-sans tracking-wider">LABS</h2>
 
         {/* Campo de correo electrónico */}

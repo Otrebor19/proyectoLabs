@@ -29,6 +29,14 @@ app.use('/api/clientes', clienteRoutes);
 const productRoutes = require('./routes/productRoutes'); // Importar tus rutas
 app.use(productRoutes);
 
+// Importar las rutas de login
+const loginRoutes = require('./routes/loginRoutes'); // Para la autenticación/login
+app.use('/api/auth', loginRoutes); // Rutas del login bajo "/api/auth"
+
+// Importar las rutas de tallas de productos
+const productoTallaRoutes = require('./routes/productoTallaRoutes');
+app.use('/api', productoTallaRoutes); // Montar las rutas
+
 const tokenRoutes = require('./routes/tokenRoutes');
 app.use('/api/tokens', tokenRoutes); 
 

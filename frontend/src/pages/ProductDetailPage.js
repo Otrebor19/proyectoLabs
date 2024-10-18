@@ -102,7 +102,7 @@ const ProductDetailPage = () => {
         {/* Detalles del producto */}
         <div className="text-left">
           <h1 className="text-3xl font-bold mb-4 text-white ">{product.nombre}</h1>
-          <p className="text-xl mb-2 text-white ">Categoría: {product.categoria}</p>
+          <p className="text-xl mb-2 text-white ">Categoría: {product.categoria_id}</p>
           <p className="text-3xl text-green-500 font-bold mb-4 ">{product.precio} BOB</p>
           <p className="text-white mb-6 ">{product.descripcion}</p>
           
@@ -147,7 +147,7 @@ const ProductDetailPage = () => {
       {/* Descripción completa */}
       <div className="mt-12">
         <h2 className="text-2xl text-white font-bold mb-4">Descripción</h2>
-        <p className="text-gray-700">{product.descripcion_larga}</p>
+        <p className="text-white">{product.descripcion}</p>
       </div>
 
       {/* Carrusel de productos relacionados */}

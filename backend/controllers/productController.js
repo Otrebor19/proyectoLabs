@@ -1,17 +1,10 @@
-const oracledb = require('oracledb');
-
-// Configuración de la conexión a la base de datos
-const dbConfig = {
-  user: 'LABS',
-  password: 'LaBs120120241010', // Actualiza con tu contraseña real
-  connectString: 'localhost:1521/XEPDB1', // Asegúrate de que este es el connectString correcto para tu entorno
-};
+const connectToDB = require('../db'); // Importar la función desde db.js
 
 // Obtener producto por ID
 async function getProductById(req, res) {
   let connection;
   try {
-    connection = await oracledb.getConnection(dbConfig); // Usamos la configuración aquí
+    connection = await connectToDB(); // Usamos la conexión del archivo db.js
     const productId = req.params.id;
 
     const query = `SELECT * FROM PRODUCTO WHERE PRODUCTO_ID = :productId`;
@@ -44,7 +37,7 @@ async function getProductById(req, res) {
 async function getRelatedProducts(req, res) {
   let connection;
   try {
-    connection = await oracledb.getConnection(dbConfig); // Usamos la configuración aquí también
+    connection = await connectToDB(); // Usamos la conexión del archivo db.js
     const productId = req.params.id;
 
     const query = `SELECT PRODUCTO_ID, NOMBRE, DESCRIPCION, PRECIO, IMAGEN_URL, CATEGORIA_ID 
@@ -55,16 +48,14 @@ async function getRelatedProducts(req, res) {
     
     const result = await connection.execute(query, { productId });
 
-    // Verificamos si se encontraron productos
     if (result.rows.length > 0) {
-      // Mapeamos los datos para que estén en el formato adecuado
       const relatedProducts = result.rows.map(product => ({
-        producto_id: product[0],  // PRODUCTO_ID es la primera columna
-        nombre: product[1],       // NOMBRE es la segunda columna
-        descripcion: product[2],  // DESCRIPCION es la tercera columna
-        precio: product[3],       // PRECIO es la cuarta columna
-        imagen_url: product[4],   // IMAGEN_URL es la quinta columna
-        categoria_id: product[5], // CATEGORIA_ID es la sexta columna
+        producto_id: product[0],
+        nombre: product[1],
+        descripcion: product[2],
+        precio: product[3],
+        imagen_url: product[4],
+        categoria_id: product[5],
       }));
 
       res.json(relatedProducts);
@@ -80,7 +71,6 @@ async function getRelatedProducts(req, res) {
     }
   }
 }
-
 
 module.exports = {
   getProductById,

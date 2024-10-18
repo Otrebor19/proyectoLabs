@@ -5,12 +5,15 @@ const RegisterPage = () => {
   // Estados para los campos del formulario
   const [formData, setFormData] = useState({
     nombre: '',
-    apellido: '',              // Cambiar a "apellido" para coincidir con la columna en la BD
+    apellido: '',
     telefono: '',
-    correo_electronico: '',     // Cambiar a "correo_electronico"
-    contraseña: '',             // Cambiar a "contraseña"
+    correo_electronico: '',
+    contraseña: '',
     confirmPassword: '',
   });
+
+  // Estado para controlar si mostrar o no las contraseñas
+  const [showPassword, setShowPassword] = useState(false);
 
   // Manejar cambios en los campos del formulario
   const handleChange = (e) => {
@@ -20,10 +23,15 @@ const RegisterPage = () => {
     });
   };
 
+  // Alternar visibilidad de la contraseña
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Datos a enviar:', formData); // Verificar que se están enviando correctamente
-    
+    console.log('Datos a enviar:', formData);
+
     // Validación de las contraseñas
     if (formData.contraseña !== formData.confirmPassword) {
       alert('Las contraseñas no coinciden');
@@ -35,13 +43,12 @@ const RegisterPage = () => {
       await registerCliente({
         nombre: formData.nombre,
         apellido: formData.apellido,
-        correo_electronico: formData.correo_electronico,  // No es necesario alias
-        contraseña: formData.contraseña,                 // No es necesario alias
+        correo_electronico: formData.correo_electronico,
+        contraseña: formData.contraseña,
         telefono: formData.telefono,
       });
 
       alert('Cliente registrado con éxito');
-      // Redirigir o limpiar el formulario
     } catch (error) {
       console.error('Error al registrar el cliente:', error);
       alert('Hubo un error al registrar el cliente');
@@ -106,10 +113,10 @@ const RegisterPage = () => {
             />
           </div>
 
-          {/* Campo de Contraseña */}
-          <div>
+          {/* Campo de Contraseña con visibilidad controlada */}
+          <div className="relative">
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               name="contraseña"
               value={formData.contraseña}
               onChange={handleChange}
@@ -117,12 +124,19 @@ const RegisterPage = () => {
               className="w-full p-2 border-b-2 bg-transparent text-white border-white"
               placeholder="Contraseña"
             />
+            <button
+              type="button"
+              onClick={toggleShowPassword}
+              className="absolute right-2 top-2 text-white"
+            >
+              {showPassword ? 'Ocultar' : 'Mostrar'}
+            </button>
           </div>
 
-          {/* Campo de Repetir Contraseña */}
-          <div>
+          {/* Campo de Confirmar Contraseña */}
+          <div className="relative">
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
@@ -130,6 +144,13 @@ const RegisterPage = () => {
               className="w-full p-2 border-b-2 bg-transparent text-white border-white"
               placeholder="Confirmar contraseña"
             />
+            <button
+              type="button"
+              onClick={toggleShowPassword}
+              className="absolute right-2 top-2 text-white"
+            >
+              {showPassword ? 'Ocultar' : 'Mostrar'}
+            </button>
           </div>
 
           {/* Checkbox de aceptación de términos */}

@@ -7,6 +7,7 @@ import Products from './components/Products';
 import CartPage from './pages/CartPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import RegisterPage from './pages/RegisterPage';
+import LoginPage from './pages/LoginPage';
 import { Routes, Route, useLocation } from 'react-router-dom'; // Importar useLocation
 import './App.css';
 
@@ -14,8 +15,8 @@ function App() {
   const location = useLocation(); // Usar useLocation para obtener la ruta actual
 
   // Definir datos de productos
-  const hideHeaderRoutes = ['/register']; // Rutas donde no quieres mostrar el header
-
+  const hideHeaderRoutes = ['/register', '/login']; // Rutas donde no quieres mostrar el header
+ 
   return (
     <CartProvider>
     <div className="App bg-custom-gradient">
@@ -34,6 +35,7 @@ function App() {
         />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/register" element={<RegisterPage />} /> {/* Ruta de registro */}
+        <Route path="/login" element={<LoginPage />} /> {/* Ruta para la página de inicio de sesión */}
         <Route path="/productos/:id" element={<ProductDetailPage />} />
         <Route path="/productos/:id/relacionados" element={<ProductDetailPage />} />
 

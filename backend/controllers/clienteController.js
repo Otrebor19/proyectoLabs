@@ -1,16 +1,13 @@
-const oracledb = require('oracledb'); 
+const connectToDB = require('../db'); // Importar la función desde db.js
 
 // Función para registrar un cliente
 async function registerCliente(req, res) {
   let connection;
+  console.log(req.body);
 
   try {
-    // Conectar a la base de datos
-    connection = await oracledb.getConnection({
-      user: "LABS",
-      password: "LaBs120120241010",
-      connectString: "localhost:1521/XEPDB1"  // Asegúrate de que la cadena de conexión sea correcta
-    });
+    // Usar la conexión centralizada desde db.js
+    connection = await connectToDB();
 
     // Desestructurar los datos del cuerpo de la solicitud
     const { nombre, apellido, correo_electronico, contraseña, telefono } = req.body;
@@ -20,14 +17,16 @@ async function registerCliente(req, res) {
       INSERT INTO CLIENTE (NOMBRE, APELLIDO, CORREO_ELECTRONICO, CONTRASEÑA, TELEFONO, ESTADO)
       VALUES (:nombre, :apellido, :correo_electronico, :contraseña, :telefono, 'ACTIVO')
     `;
+    
+    console.log('Datos enviados a la base de datos:', { nombre, apellido, correo_electronico, contraseña, telefono });
 
     // Ejecutar la consulta
     await connection.execute(query, {
-      nombre,                          
-  apellido,                       
-  correo_electronico,  // Sin alias, porque ahora coincide con el nombre de la base de datos
-  contraseña,          
-  telefono                        // Se asocia con el campo TELEFONO en la tabla
+      nombre,
+      apellido,
+      correo_electronico,
+      contraseña,
+      telefono
     }, { autoCommit: true });
 
     // Devolver una respuesta de éxito
