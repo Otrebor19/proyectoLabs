@@ -67,7 +67,7 @@ const ProductCard = ({ product }) => {
           {product.nombre}
         </h2>
         <div className="text-green-400 text-[42px] font-bold font-fprecio">
-          {product.precio} BOB
+          {product.precio} $
         </div>
         <button
           onClick={openModal} // Abrir el modal al hacer clic

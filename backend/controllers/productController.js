@@ -11,21 +11,21 @@ async function getProductById(req, res) {
     const result = await connection.execute(query, { productId });
 
     if (result.rows.length > 0) {
-      const product = result.rows[0];
+      const product = result.rows[0]; // Mapeo correcto de columnas
       res.json({
         producto_id: product[0],
-        nombre: product[2],
-        descripcion: product[3],
+        nombre: product[2],          // Verifica si el índice 2 es realmente el nombre
+        descripcion: product[3],     // Verifica si el índice 3 es la descripción
         precio: product[4],
-        imagen_principal: product[12],
+        imagen_principal: product[12],// Verifica si el índice 12 es la imagen
         categoria_id: product[5],
       });
     } else {
       res.status(404).json({ message: 'Producto no encontrado' });
     }
   } catch (error) {
-    console.error('Error al obtener el producto:', error);
-    res.status(500).json({ message: 'Error al obtener el producto' });
+    console.error('Error al obtener el producto:', error.message);
+    res.status(500).json({ message: 'Error al obtener el producto', details: error.message });
   } finally {
     if (connection) {
       await connection.close();
@@ -51,7 +51,7 @@ async function getRelatedProducts(req, res) {
     if (result.rows.length > 0) {
       const relatedProducts = result.rows.map(product => ({
         producto_id: product[0],
-        nombre: product[1],
+        nombre: product[1],         // Verifica si estos índices son correctos
         descripcion: product[2],
         precio: product[3],
         imagen_url: product[4],
@@ -63,8 +63,8 @@ async function getRelatedProducts(req, res) {
       res.status(404).json({ message: 'No hay productos relacionados' });
     }
   } catch (error) {
-    console.error('Error al obtener los productos relacionados:', error);
-    res.status(500).json({ message: 'Error al obtener los productos relacionados' });
+    console.error('Error al obtener los productos relacionados:', error.message);
+    res.status(500).json({ message: 'Error al obtener los productos relacionados', details: error.message });
   } finally {
     if (connection) {
       await connection.close();

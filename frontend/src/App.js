@@ -8,6 +8,7 @@ import CartPage from './pages/CartPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
+import CheckoutPage from './pages/CheckoutPage'; // Página de checkout
 import { Routes, Route, useLocation } from 'react-router-dom'; // Importar useLocation
 import './App.css';
 
@@ -15,7 +16,7 @@ function App() {
   const location = useLocation(); // Usar useLocation para obtener la ruta actual
 
   // Definir datos de productos
-  const hideHeaderRoutes = ['/register', '/login']; // Rutas donde no quieres mostrar el header
+  const hideHeaderRoutes = ['/register', '/login', '/checkout']; // Rutas donde no quieres mostrar el header
  
   return (
     <CartProvider>
@@ -38,7 +39,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} /> {/* Ruta para la página de inicio de sesión */}
         <Route path="/productos/:id" element={<ProductDetailPage />} />
         <Route path="/productos/:id/relacionados" element={<ProductDetailPage />} />
-
+        <Route path="/checkout" element={<CheckoutPage />} /> {/* Ruta de checkout */}
       </Routes>
       <Footer />
     </div>

@@ -11,6 +11,7 @@ export const CartProvider = ({ children }) => {
   // Cargar el carrito desde localStorage cuando la aplicación se monta
   useEffect(() => {
     const savedCart = getCart();
+    console.log("Carrito cargado desde localStorage:", savedCart); // Verifica si se cargan los productos
     setCartItems(savedCart);
   }, []);
 
@@ -18,6 +19,7 @@ export const CartProvider = ({ children }) => {
   const addToCart = (product) => {
     addProductToCart(product); // Usa la función de cartUtils.js
     const updatedCart = getCart(); // Actualizar el estado del carrito con los datos de localStorage
+    console.log("Producto añadido al carrito:", updatedCart); // Verifica si se añade correctamente
     setCartItems(updatedCart);
   };
 

@@ -56,7 +56,7 @@ const CartPage = () => {
                     />
                     <div className="ml-4">
                       <h3 className="text-base sm:text-xl font-semibold text-black">{product.nombre}</h3>
-                      <p className="text-sm text-black font-bold">{product.precio} BOB</p>
+                      <p className="text-sm text-black font-bold">{product.precio} $</p>
                     </div>
                   </div>
 

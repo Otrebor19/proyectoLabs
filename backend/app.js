@@ -3,15 +3,20 @@ const cors = require('cors');// Importa el paquete cors
 const app = express();
 
 // Configura CORS para permitir solicitudes desde el frontend
-app.use(cors({
-  origin: 'http://localhost:3001' // Cambia este valor al puerto donde corre tu frontend
-}));
+const corsOptions = {
+  origin: 'http://localhost:3001', // Asegúrate de que sea el origen correcto de tu frontend
+  credentials: true, // Esto es necesario para permitir las credenciales (cookies, tokens, etc.)
+};
 
+app.use(cors(corsOptions));
 // Middlewares y rutas
 app.use(express.json());
 
 
 
+// Importar rutas
+const checkoutRoutes = require('./routes/checkoutRoutes'); // Importar las rutas de checkout
+app.use('/api', checkoutRoutes); // Aquí es donde usas las rutas de checkout
 
 
 app.use('/public', express.static('public'));
@@ -36,6 +41,12 @@ app.use('/api/auth', loginRoutes); // Rutas del login bajo "/api/auth"
 // Importar las rutas de tallas de productos
 const productoTallaRoutes = require('./routes/productoTallaRoutes');
 app.use('/api', productoTallaRoutes); // Montar las rutas
+
+
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+
 
 const tokenRoutes = require('./routes/tokenRoutes');
 app.use('/api/tokens', tokenRoutes); 

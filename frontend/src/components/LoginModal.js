@@ -44,7 +44,7 @@ const LoginModal = ({ isModalOpen, toggleModal, showPassword, togglePasswordVisi
           <a href="#forgot-password" className="text-white hover:underline">
             ¿Olvidaste tu contraseña?
           </a>
-          <a href="#register" className="text-white hover:underline">
+          <a href="/register" className="text-white hover:underline">
             Registrarse
           </a>
         </div>

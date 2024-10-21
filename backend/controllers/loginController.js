@@ -1,5 +1,6 @@
 const connectToDB = require('../db'); // Importar la función desde db.js
-
+const jwt = require('jsonwebtoken'); 
+const secretKey = 'yourSecretKey';
 // Función para manejar el login
 async function loginCliente(req, res) {
   const { correo_electronico, contraseña } = req.body;
@@ -25,6 +26,21 @@ async function loginCliente(req, res) {
     if (result.rows.length > 0) {
       // Login exitoso
       const cliente = result.rows[0];
+      const token = jwt.sign(
+        { clienteId: cliente[0], correo_electronico: cliente[3] }, // Datos del payload
+        'yourSecretKey', // Clave secreta para firmar el token
+        { expiresIn: '1h' } // Tiempo de expiración
+      );
+
+      // Configurar la cookie http-only con el token
+      res.cookie('token', token, {
+        httpOnly: true,  // No accesible desde JavaScript
+        secure: false,    // Asegúrate de que uses HTTPS en producción
+        sameSite: 'lax', // Controlar el comportamiento de la cookie
+        maxAge: 3600000   // Tiempo de expiración en milisegundos
+      });
+
+
       res.status(200).json({
         message: 'Login exitoso',
         cliente: {

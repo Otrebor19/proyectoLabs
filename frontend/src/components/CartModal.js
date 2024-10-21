@@ -15,7 +15,7 @@ const CartModal = ({ isCartOpen, toggleCart }) => {
 
   return (
     <div
-      className={`fixed shadow-md shadow-white inset-y-0 right-0 w-80 backdrop-blur-sm bg-transparent z-30 transform transition-transform duration-300 ${
+      className={`fixed shadow-md shadow-white inset-y-0 right-0 w-80 backdrop-blur-sm bg-transparent z-50 transform transition-transform duration-300 ${
         isCartOpen ? 'translate-x-0' : 'translate-x-full'
       }`}
     >
@@ -47,7 +47,7 @@ const CartModal = ({ isCartOpen, toggleCart }) => {
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <span className="text-[14px] font-bold text-white">{product.precio} BOB</span>
+                  <span className="text-[14px] font-bold text-white">{product.precio} $</span>
                   <button
                     onClick={() => removeFromCart(product.producto_id)} // Eliminar producto
                     className="ml-2 text-red-500 hover:text-red-700"

@@ -9,9 +9,8 @@ const LoginPage = () => {
   });
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Para mostrar u ocultar la contraseña
   const navigate = useNavigate();
-
-  const [showPassword, setShowPassword] = useState(false);
 
   // Alternar visibilidad de la contraseña
   const toggleShowPassword = () => {
@@ -26,19 +25,23 @@ const LoginPage = () => {
     });
   };
 
+
+  
+  // Manejar el submit del formulario de login
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
   
     try {
       const response = await loginCliente({
-        correo_electronico: formData.correo_electronico, // Esto debería estar bien
-        contraseña: formData.contraseña // Asegúrate de que el nombre coincida con el del backend
+        correo_electronico: formData.correo_electronico, 
+        contraseña: formData.contraseña,
       });
-      
+  
       if (response.status === 200) {
-        localStorage.setItem('token', response.data.token);
-        navigate('/'); // Redirige después de iniciar sesión
+        const token = response.data.token; // Asegúrate de que este sea el campo correcto
+        localStorage.setItem('token', token); // Guardar el token en el localStorage
+        navigate('/'); // Redirigir al usuario a la página protegida
       }
     } catch (error) {
       setErrorMessage('Error al iniciar sesión. Verifica tus credenciales.');
@@ -46,7 +49,7 @@ const LoginPage = () => {
       setLoading(false);
     }
   };
-  
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-custom-gradient">
@@ -93,6 +96,7 @@ const LoginPage = () => {
           {/* Botón de inicio de sesión */}
           <button
             type="submit"
+            
             className={`w-full py-2 px-4 rounded-lg transition duration-300 ${loading ? 'bg-gray-500' : 'bg-blue-500 hover:bg-blue-700'} text-white`}
             disabled={loading}
           >

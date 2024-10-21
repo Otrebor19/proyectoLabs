@@ -6,10 +6,18 @@ const api = axios.create({
   timeout: 10000, // Tiempo máximo de espera para una solicitud
   headers: {
     'Content-Type': 'application/json',
-  }
+  },
+  withCredentials: true // Asegúrate de que las cookies se envíen con cada solicitud
 });
 
-// Puedes agregar interceptores para manejar errores o autentificación
+
+// Función para crear el PaymentIntent
+export const createPaymentIntent = (paymentData) => {
+  return api.post('/create-payment-intent', paymentData);
+};
+
+
+
 
 // Funciones para manejar peticiones específicas
 export const fetchProductos = () => {
@@ -27,31 +35,43 @@ export const registerCliente = (clienteData) => {
 
 // api.js
 export const fetchProductoById = async (id) => {
-  const response = await axios.get(`http://localhost:3000/api/productos/${id}`);
+  const response = await api.get(`/productos/${id}`); // Usar api en lugar de axios
   return response;
 };
 
 
 export const loginCliente = async (formData) => {
-  return await axios.post('http://localhost:3000/api/auth/login', {
-    correo_electronico: formData.correo_electronico,
-    contraseña: formData.contraseña,  // Asegúrate de que los nombres coincidan con los del backend
-  });
+  try {
+    const response = await api.post('/auth/login', {
+      correo_electronico: formData.correo_electronico,
+      contraseña: formData.contraseña,  
+    });
+    
+    // No necesitas guardar el token en localStorage si estás usando cookies HttpOnly
+    return response;
+  } catch (error) {
+    throw error;
+  }
 };
 
+
+
 export const fetchTallasByProducto = async (productoId) => {
-  return await axios.get(`http://localhost:3000/api/productos/${productoId}/tallas`);
+  return await api.get(`/productos/${productoId}/tallas`); // Usar api en lugar de axios
 };
+
+
 
 export const fetchRelatedProducts = async (id) => {
   try {
-    const response = await axios.get(`http://localhost:3000/api/productos/${id}/relacionados`);
+    const response = await api.get(`/productos/${id}/relacionados`); // Usar api en lugar de axios
     return response;
   } catch (error) {
     console.error('Error al obtener los productos relacionados:', error);
     throw error;
   }
 };
+
 
 
 // Exportar la instancia de Axios para que pueda ser utilizada si es necesario
