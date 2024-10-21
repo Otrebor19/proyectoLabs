@@ -1,49 +1,67 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importar para redireccionar
+import { useNavigate } from 'react-router-dom';
 import { XIcon } from '@heroicons/react/outline';
+
+// Componente de Alerta
+const Alert = ({ message, onClose }) => {
+  useEffect(() => {
+    // Configurar el temporizador para ocultar el mensaje después de 3 segundos
+    const timer = setTimeout(() => {
+      onClose();
+    }, 3000);
+
+    // Limpiar el temporizador al desmontar
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div className="fixed top-5 right-5 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg transition-opacity duration-500 ease-in-out opacity-100">
+      {message}
+    </div>
+  );
+};
 
 const CartPage = () => {
   const [cart, setCart] = useState([]);
-  const navigate = useNavigate(); // Hook para redirigir
+  const [showAlert, setShowAlert] = useState(false); // Estado para controlar la visibilidad del mensaje
+  const navigate = useNavigate();
 
-  // Cargar el carrito desde el localStorage cuando la página se monta
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
     setCart(savedCart);
   }, []);
 
-  // Función para actualizar la cantidad de un producto
   const updateQuantity = (producto_id, newQuantity) => {
     const updatedCart = cart.map((item) =>
       item.producto_id === producto_id
-        ? { ...item, quantity: Math.max(1, newQuantity) } // Evita que la cantidad sea menor que 1
+        ? { ...item, quantity: Math.max(1, newQuantity) }
         : item
     );
     setCart(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
-  // Función para eliminar un producto del carrito
   const removeFromCart = (producto_id) => {
     const updatedCart = cart.filter((item) => item.producto_id !== producto_id);
     setCart(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
-  // Calcular el total del pedido
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.precio * item.quantity, 0);
   };
 
-  // Función para manejar el botón de "Proceder con el Pago"
   const handleCheckout = () => {
-    const token = localStorage.getItem('token'); // Verificar si el token está presente
+    if (cart.length === 0) {
+      setShowAlert(true); // Mostrar alerta cuando el carrito esté vacío
+      return;
+    }
+
+    const token = localStorage.getItem('token');
 
     if (token) {
-      // Si el token está presente, redirigir a la página de Checkout
       navigate('/checkout');
     } else {
-      // Si no hay token, redirigir a la página de inicio de sesión
       navigate('/login');
     }
   };
@@ -62,7 +80,6 @@ const CartPage = () => {
             ) : (
               cart.map((product) => (
                 <div key={product.producto_id} className="flex justify-between items-center mb-4 border-b pb-4">
-                  {/* Imagen y nombre del producto */}
                   <div className="flex items-center">
                     <img
                       src={product.imagen_url}
@@ -75,7 +92,6 @@ const CartPage = () => {
                     </div>
                   </div>
 
-                  {/* Controles para la cantidad */}
                   <div className="flex items-center">
                     <button
                       onClick={() => updateQuantity(product.producto_id, product.quantity - 1)}
@@ -92,7 +108,6 @@ const CartPage = () => {
                     </button>
                   </div>
 
-                  {/* Botón para eliminar producto */}
                   <button
                     onClick={() => removeFromCart(product.producto_id)}
                     className="text-red-500 hover:text-red-700 ml-2 sm:ml-4"
@@ -112,15 +127,13 @@ const CartPage = () => {
               <span className="text-sm sm:text-lg text-black">{cart.length} items</span>
             </div>
 
-            {/* Total del pedido */}
             <div className="flex justify-between mb-2 sm:mb-4">
               <span className="text-sm sm:text-lg font-medium text-black">Total:</span>
               <span className="text-sm sm:text-lg font-bold text-black">{calculateTotal()} BOB</span>
             </div>
 
-            {/* Botón de proceder con el pago */}
             <button
-              onClick={handleCheckout} // Añadir el evento onClick aquí
+              onClick={handleCheckout}
               className="w-full bg-green-500 text-white py-2 sm:py-3 rounded-lg hover:bg-green-600"
             >
               Proceder con el Pago
@@ -128,6 +141,9 @@ const CartPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Mostrar la alerta en la parte superior derecha si showAlert es true */}
+      {showAlert && <Alert message="Tu carrito está vacío. Añade productos al carrito para realizar una compra." onClose={() => setShowAlert(false)} />}
     </section>
   );
 };

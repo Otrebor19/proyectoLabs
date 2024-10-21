@@ -1,10 +1,27 @@
-import React, { useContext } from 'react'; // Eliminamos useState y useEffect
+import React, { useContext, useState, useEffect } from 'react'; // Añadir useState para manejar el estado de la alerta
 import { XIcon } from '@heroicons/react/outline'; 
 import { useNavigate } from 'react-router-dom'; 
 import { CartContext } from '../context/CartContext'; // Importar el CartContext
 
+// Componente de Alerta
+const Alert = ({ message, onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose(); // Ocultar la alerta automáticamente después de 3 segundos
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div className="fixed top-5 right-5 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg transition-opacity duration-500 ease-in-out">
+      {message}
+    </div>
+  );
+};
+
 const CartModal = ({ isCartOpen, toggleCart }) => {
-  const { cartItems, removeFromCart } = useContext(CartContext); // Eliminamos getTotalItemsInCart porque no se está usando
+  const { cartItems, removeFromCart } = useContext(CartContext);
+  const [showAlert, setShowAlert] = useState(false); // Estado para mostrar la alerta
   const navigate = useNavigate();
 
   // Función para redirigir a la página del carrito
@@ -12,18 +29,23 @@ const CartModal = ({ isCartOpen, toggleCart }) => {
     toggleCart(); // Cierra el modal
     navigate('/cart'); // Redirige a la página del carrito
   };
- // Función para manejar el botón de "Proceder con el Pago"
- const handleCheckout = () => {
-  const token = localStorage.getItem('token'); // Verificar si el token está presente
 
-  if (token) {
-    // Si el token está presente, redirigir a la página de Checkout
-    navigate('/checkout');
-  } else {
-    // Si no hay token, redirigir a la página de inicio de sesión
-    navigate('/login');
-  }
-};
+  // Función para manejar el botón de "Proceder con el Pago"
+  const handleCheckout = () => {
+    if (cartItems.length === 0) {
+      setShowAlert(true); // Mostrar alerta si el carrito está vacío
+      return;
+    }
+
+    const token = localStorage.getItem('token'); // Verificar si el token está presente
+
+    if (token) {
+      navigate('/checkout'); // Si el token está presente, redirigir a la página de Checkout
+    } else {
+      navigate('/login'); // Si no hay token, redirigir a la página de inicio de sesión
+    }
+  };
+
   return (
     <div
       className={`fixed shadow-md shadow-white inset-y-0 right-0 w-80 backdrop-blur-sm bg-transparent z-50 transform transition-transform duration-300 ${
@@ -89,6 +111,9 @@ const CartModal = ({ isCartOpen, toggleCart }) => {
             </button>
         </div>
       </div>
+
+      {/* Mostrar la alerta si el carrito está vacío */}
+      {showAlert && <Alert message="Tu carrito está vacío. Añade productos para proceder con el pago." onClose={() => setShowAlert(false)} />}
     </div>
   );
 };
