@@ -12,7 +12,18 @@ const CartModal = ({ isCartOpen, toggleCart }) => {
     toggleCart(); // Cierra el modal
     navigate('/cart'); // Redirige a la página del carrito
   };
+ // Función para manejar el botón de "Proceder con el Pago"
+ const handleCheckout = () => {
+  const token = localStorage.getItem('token'); // Verificar si el token está presente
 
+  if (token) {
+    // Si el token está presente, redirigir a la página de Checkout
+    navigate('/checkout');
+  } else {
+    // Si no hay token, redirigir a la página de inicio de sesión
+    navigate('/login');
+  }
+};
   return (
     <div
       className={`fixed shadow-md shadow-white inset-y-0 right-0 w-80 backdrop-blur-sm bg-transparent z-50 transform transition-transform duration-300 ${
@@ -70,9 +81,12 @@ const CartModal = ({ isCartOpen, toggleCart }) => {
           >
             Ver Carrito
           </button>
-          <button className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-700">
-            Proceder con la Compra
-          </button>
+          <button
+              onClick={handleCheckout} // Añadir el evento onClick aquí
+              className="w-full bg-green-500 text-white py-2 sm:py-3 rounded-lg hover:bg-green-600"
+            >
+              Proceder con el Pago
+            </button>
         </div>
       </div>
     </div>

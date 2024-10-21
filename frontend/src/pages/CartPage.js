@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importar para redireccionar
 import { XIcon } from '@heroicons/react/outline';
 
 const CartPage = () => {
   const [cart, setCart] = useState([]);
+  const navigate = useNavigate(); // Hook para redirigir
 
   // Cargar el carrito desde el localStorage cuando la página se monta
   useEffect(() => {
@@ -31,6 +33,19 @@ const CartPage = () => {
   // Calcular el total del pedido
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.precio * item.quantity, 0);
+  };
+
+  // Función para manejar el botón de "Proceder con el Pago"
+  const handleCheckout = () => {
+    const token = localStorage.getItem('token'); // Verificar si el token está presente
+
+    if (token) {
+      // Si el token está presente, redirigir a la página de Checkout
+      navigate('/checkout');
+    } else {
+      // Si no hay token, redirigir a la página de inicio de sesión
+      navigate('/login');
+    }
   };
 
   return (
@@ -104,7 +119,10 @@ const CartPage = () => {
             </div>
 
             {/* Botón de proceder con el pago */}
-            <button className="w-full bg-green-500 text-white py-2 sm:py-3 rounded-lg hover:bg-green-600">
+            <button
+              onClick={handleCheckout} // Añadir el evento onClick aquí
+              className="w-full bg-green-500 text-white py-2 sm:py-3 rounded-lg hover:bg-green-600"
+            >
               Proceder con el Pago
             </button>
           </div>
