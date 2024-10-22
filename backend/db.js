@@ -5,7 +5,7 @@ async function connectToDB() {
   try {
     const connection = await oracledb.getConnection({
       user:'LABS',
-      password:'LaBs120120241010',
+      password:'pass',
       connectString: 'localhost:1521/XEPDB1',
     });
 

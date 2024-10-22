@@ -13,6 +13,8 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 
+const allProductRoutes = require('./routes/allProductRoutes');
+app.use('/api', allProductRoutes);
 
 // Importar rutas
 const checkoutRoutes = require('./routes/checkoutRoutes'); // Importar las rutas de checkout

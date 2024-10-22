@@ -8,6 +8,7 @@ import CartPage from './pages/CartPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
+import TodoProductosPage from './pages/TodoProductosPage';
 import CheckoutPage from './pages/CheckoutPage'; // Página de checkout
 import { Routes, Route, useLocation } from 'react-router-dom'; // Importar useLocation
 import './App.css';
@@ -40,6 +41,7 @@ function App() {
         <Route path="/productos/:id" element={<ProductDetailPage />} />
         <Route path="/productos/:id/relacionados" element={<ProductDetailPage />} />
         <Route path="/checkout" element={<CheckoutPage />} /> {/* Ruta de checkout */}
+        <Route path="/allproducts" element={<TodoProductosPage />} />
       </Routes>
       <Footer />
     </div>

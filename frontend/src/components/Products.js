@@ -57,7 +57,7 @@ const Products = ({ addToCart, cart }) => {
   if (products.length === 0) return <div>No hay productos disponibles</div>;
 
   return (
-    <section className="bg-custom-gradient text-white min-h-screen flex items-center">
+    <section className=" text-white min-h-screen flex items-center">
       <div className="container mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
         
         {/* Columna izquierda: Lista de categorías */}
