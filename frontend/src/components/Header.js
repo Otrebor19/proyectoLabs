@@ -83,14 +83,7 @@ const Header = ({ removeFromCart }) => {
 
           {/* Sección derecha: Barra de búsqueda, carrito y login/logout */}
           <div className="flex items-center space-x-4">
-            {/* Barra de búsqueda en pantallas grandes */}
-            <div className="relative hidden md:flex items-center">
-              <input
-                type="text"
-                placeholder="Buscar productos..."
-                className="border rounded-full px-4 py-2 text-sm w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+            
 
             {/* Mostrar botón de "Iniciar sesión" o "Cerrar sesión" según el estado de autenticación */}
             {isAuthenticated ? (

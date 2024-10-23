@@ -1,3 +1,4 @@
+
 import React, { useContext, useState, useEffect } from 'react'; // Añadir useState para manejar el estado de la alerta
 import { XIcon } from '@heroicons/react/outline'; 
 import { useNavigate } from 'react-router-dom'; 

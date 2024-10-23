@@ -7,18 +7,23 @@ async function getProductById(req, res) {
     connection = await connectToDB(); // Usamos la conexión del archivo db.js
     const productId = req.params.id;
 
-    const query = `SELECT * FROM PRODUCTO WHERE PRODUCTO_ID = :productId`;
+    const query = `
+    SELECT P.PRODUCTO_ID, P.NOMBRE, P.DESCRIPCION, P.PRECIO, P.IMAGEN_URL, C.NOMBRE_CATEGORIA
+    FROM PRODUCTO P
+    JOIN CATEGORIA C ON P.CATEGORIA_ID = C.CATEGORIA_ID
+    WHERE P.PRODUCTO_ID = :productId
+  `;
     const result = await connection.execute(query, { productId });
 
     if (result.rows.length > 0) {
       const product = result.rows[0]; // Mapeo correcto de columnas
       res.json({
         producto_id: product[0],
-        nombre: product[2],          // Verifica si el índice 2 es realmente el nombre
-        descripcion: product[3],     // Verifica si el índice 3 es la descripción
-        precio: product[4],
-        imagen_principal: product[12],// Verifica si el índice 12 es la imagen
-        categoria_id: product[5],
+        nombre: product[1],          // Verifica si el índice 2 es realmente el nombre
+        descripcion: product[2],     // Verifica si el índice 3 es la descripción
+        precio: product[3],
+        imagen_principal: product[4],// Verifica si el índice 12 es la imagen
+        nombre_categoria: product[5],
       });
     } else {
       res.status(404).json({ message: 'Producto no encontrado' });

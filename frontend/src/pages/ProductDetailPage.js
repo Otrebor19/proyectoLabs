@@ -102,7 +102,7 @@ const ProductDetailPage = () => {
         {/* Detalles del producto */}
         <div className="text-left">
           <h1 className="text-3xl font-bold mb-4 text-white ">{product.nombre}</h1>
-          <p className="text-xl mb-2 text-white ">Categoría: {product.categoria_id}</p>
+          <p className="text-xl mb-2 text-white ">Categoría: {product.nombre_categoria}</p>
           <p className="text-3xl text-green-500 font-bold mb-4 ">{product.precio} BOB</p>
           <p className="text-white mb-6 ">{product.descripcion}</p>
           

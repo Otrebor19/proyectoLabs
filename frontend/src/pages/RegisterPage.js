@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate
 import { registerCliente } from '../services/api';
 
 const RegisterPage = () => {
+  const navigate = useNavigate(); // Define el hook navigate
+
   // Estados para los campos del formulario
   const [formData, setFormData] = useState({
     nombre: '',
@@ -49,6 +52,10 @@ const RegisterPage = () => {
       });
 
       alert('Cliente registrado con éxito');
+      
+      // Redirigir a la página de inicio de sesión
+      navigate('/login'); // Aquí redirigimos después del registro exitoso
+
     } catch (error) {
       console.error('Error al registrar el cliente:', error);
       alert('Hubo un error al registrar el cliente');

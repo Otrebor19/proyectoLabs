@@ -12,9 +12,10 @@ app.use(cors(corsOptions));
 // Middlewares y rutas
 app.use(express.json());
 
+const carritoRoutes = require('./routes/carritoRoutes');
+app.use('/api/carrito', carritoRoutes);
+// Ruta para obtener el carrito del usuario autenticado
 
-const allProductRoutes = require('./routes/allProductRoutes');
-app.use('/api', allProductRoutes);
 
 // Importar rutas
 const checkoutRoutes = require('./routes/checkoutRoutes'); // Importar las rutas de checkout

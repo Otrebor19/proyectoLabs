@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useEffect } from 'react';
 import { getCart, addToCart as addProductToCart, removeFromCart as removeProductFromCart } from '../utils/cartUtils'; // Importar las funciones de cartUtils
 

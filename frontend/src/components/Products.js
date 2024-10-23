@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
-import CategoryList from './CategoryList'; // Importa el componente de lista de categorías
-import { fetchProductos, fetchCategorias } from '../services/api'; // Importar las funciones de API
+// Importa el componente de lista de categorías
+import { fetchProductos, fetchCategorias } from '../services/api'; // Importa las funciones de API
 
-const Products = ({ addToCart, cart }) => {
+const Products = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  const [searchTerm, setSearchTerm] = useState(''); // Estado para la búsqueda
+  const [selectedCategory, setSelectedCategory] = useState(''); // Estado para la categoría seleccionada
 
   // Función para obtener los productos
   const getProductos = async () => {
     try {
-      const response = await fetchProductos(); 
+      const response = await fetchProductos();
       const productos = response.data.map(row => ({
         producto_id: row[0],
         nombre: row[2],
         descripcion: row[3],
         precio: row[4],
         imagen_url: row[12],
+        categoria_id: row[5], // Asegúrate de tener la categoría aquí
       }));
       setProducts(productos);
       setLoading(false);
@@ -35,8 +39,7 @@ const Products = ({ addToCart, cart }) => {
       const response = await fetchCategorias();
       const categorias = response.data.map(row => ({
         categoria_id: row[0],
-        nombre_categoria: row[1], // Ajusta los nombres según tu base de datos
-        categoria_url: row[5], // Suponiendo que el icono de la categoría está en la columna 5
+        nombre_categoria: row[1],
       }));
       setCategories(categorias);
     } catch (error) {
@@ -51,24 +54,61 @@ const Products = ({ addToCart, cart }) => {
     getCategorias();
   }, []);
 
-  // Renderizado condicional según el estado
+  // Función para manejar la búsqueda
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Función para manejar el cambio de categoría
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+  };
+
+  // Filtrar los productos según el término de búsqueda y la categoría seleccionada
+  const filteredProducts = products.filter((product) => {
+    const matchesSearchTerm = product.nombre.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === '' || product.categoria_id === Number(selectedCategory);
+    return matchesSearchTerm && matchesCategory;
+  });
+
   if (loading) return <div>Cargando productos y categorías...</div>;
   if (error) return <div>{error}</div>;
   if (products.length === 0) return <div>No hay productos disponibles</div>;
 
   return (
-    <section className=" text-white min-h-screen flex items-center">
-      <div className="container mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
-        
+    <section className=" text-white min-h-screen flex flex-col items-center">
+      <div className="container mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 w-full">
         {/* Columna izquierda: Lista de categorías */}
-        <div className="col-span-1">
-          <CategoryList categories={categories} />
+        <div className="col-span-1 sticky top-0">
+          <h2 className="text-2xl mb-4 text-white">Categorías</h2>
+          <select
+            className="border bg-black p-2 w-full"
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+          >
+            <option value="">Todas las Categorías</option>
+            {categories.map((category) => (
+              <option key={category.categoria_id} value={category.categoria_id}>
+                {category.nombre_categoria}
+              </option>
+            ))}
+          </select>
         </div>
-        
-        {/* Columna derecha: Lista de productos */}
-        <div className="col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-          {products.map((product) => (
-            <ProductCard key={product.producto_id} product={product}  />
+
+        {/* Columna derecha: Lista de productos y búsqueda */}
+        <div className="col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="col-span-full mb-4">
+            <input
+              type="text"
+              placeholder="Buscar productos..."
+              className="border p-2 w-full text-black"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+          </div>
+
+          {filteredProducts.map((product) => (
+            <ProductCard key={product.producto_id} product={product} />
           ))}
         </div>
       </div>

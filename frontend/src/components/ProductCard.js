@@ -52,20 +52,23 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="relative rounded-xl p-5 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 bg-white bg-opacity-5">
+    <div className="relative rounded-xl p-5 mx-auto grid grid-cols-1 lg:grid-cols-1 gap-1 bg-white bg-opacity-5">
       <img 
         src={product.imagen_url} 
         alt={product.nombre}  
-        className="object-cover w-[291px] h-[341px] cursor-pointer" 
+        className="object-cover w-[350px] h-[250px] cursor-pointer" 
         onClick={handleNavigateToDetail} 
       />
       <div className="flex flex-col justify-center space-y-2">
         <h2 
-          className="text-white text-[40px] font-sans cursor-pointer"
+          className="text-white text-[38px] font-sans mt-0 cursor-pointer"
           onClick={handleNavigateToDetail}
         >
           {product.nombre}
         </h2>
+  
+        
+        
         <div className="text-green-400 text-[42px] font-bold font-fprecio">
           {product.precio} $
         </div>
@@ -79,7 +82,7 @@ const ProductCard = ({ product }) => {
           {addedToCart ? 'Añadido al carrito' : 'BUY'}
         </button>
       </div>
-
+  
       {/* Modal para seleccionar la talla */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
@@ -99,14 +102,14 @@ const ProductCard = ({ product }) => {
                 </option>
               ))}
             </select>
-
+  
             <button
               onClick={handleAddToCart}
               className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300"
             >
               Seleccionar Talla
             </button>
-
+  
             <button
               onClick={closeModal}
               className="mt-2 w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-700 transition duration-300"
@@ -118,6 +121,7 @@ const ProductCard = ({ product }) => {
       )}
     </div>
   );
+  
 };
 
 export default ProductCard;
