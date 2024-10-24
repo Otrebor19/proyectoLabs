@@ -1,0 +1,110 @@
+|-- backend
+|   |-- config
+|   |   |-- db.js
+|   |-- controllers
+|   |   |-- allProductController.js
+|   |   |-- carritoController.js
+|   |   |-- categoriasController.js
+|   |   |-- checkoutController.js
+|   |   |-- clienteController.js
+|   |   |-- controller.js
+|   |   |-- loginController.js
+|   |   |-- productController.js
+|   |   |-- productosController.js
+|   |   |-- productoTallaController.js
+|   |-- middlewares
+|   |   |-- authMiddleware.js
+|   |-- models
+|   |-- public
+|   |   |-- images
+|   |   |   |-- categories
+|   |   |   |   |-- jacket.png
+|   |   |   |   |-- shirt.png
+|   |   |   |   |-- short.png
+|   |   |   |   |-- tenis.png
+|   |   |   |   |-- trusse.png
+|   |   |   |-- productos
+|   |   |   |   |-- product-image.png
+|   |   |   |   |-- short-nike.png
+|   |   |   |   |-- tenis-adidas.png
+|   |-- routes
+|   |   |-- allProductRoutes.js
+|   |   |-- carritoRoutes.js
+|   |   |-- categorias.js
+|   |   |-- checkoutRoutes.js
+|   |   |-- clienteRoutes.js
+|   |   |-- loginRoutes.js
+|   |   |-- productos.js
+|   |   |-- productoTallaRoutes.js
+|   |   |-- productRoutes.js
+|   |   |-- relacionadosRoutes.js
+|   |   |-- tokenRoutes.js
+|   |-- services
+|   |-- utils
+|   |-- app.js
+|   |-- index.js
+|   |-- package-lock.json
+|   |-- package.json
+|-- frontend
+|   |-- public
+|   |   |-- images
+|   |   |   |-- categories
+|   |   |   |   |-- jacket.png
+|   |   |   |   |-- shirt.png
+|   |   |   |   |-- short.png
+|   |   |   |   |-- tenis.png
+|   |   |   |   |-- trusse.png
+|   |   |-- favicon.ico
+|   |   |-- index.html
+|   |   |-- logo192.png
+|   |   |-- logo512.png
+|   |   |-- manifest.json
+|   |   |-- robots.txt
+|   |-- src
+|   |   |-- assets
+|   |   |   |-- bg-product.jpeg
+|   |   |   |-- logo.png
+|   |   |   |-- perfil.png
+|   |   |   |-- product-image.png
+|   |   |-- components
+|   |   |   |-- CartModal.js
+|   |   |   |-- CategoryList.js
+|   |   |   |-- Footer.js
+|   |   |   |-- Header.js
+|   |   |   |-- LoginModal.js
+|   |   |   |-- MainSection.js
+|   |   |   |-- ProductCard.js
+|   |   |   |-- Products.js
+|   |   |-- context
+|   |   |   |-- CartContext.js
+|   |   |-- hooks
+|   |   |-- pages
+|   |   |   |-- CartPage.js
+|   |   |   |-- CheckoutPage.js
+|   |   |   |-- LoginPage.js
+|   |   |   |-- ProductDetailPage.js
+|   |   |   |-- RegisterPage.js
+|   |   |   |-- TodoProductosPage.js
+|   |   |-- services
+|   |   |   |-- api.js
+|   |   |-- utils
+|   |   |   |-- cartUtils.js
+|   |   |-- App.css
+|   |   |-- App.js
+|   |   |-- App.test.js
+|   |   |-- index.css
+|   |   |-- index.js
+|   |   |-- logo.svg
+|   |   |-- reportWebVitals.js
+|   |   |-- setupTests.js
+|   |-- .gitignore
+|   |-- .gitkeep
+|   |-- package-lock.json
+|   |-- package.json
+|   |-- README.md
+|   |-- tailwind.config.js
+|-- .env
+|-- estructura_arbol.txt
+|-- README.md
+|-- rutas.ps1
+|-- rutas.txt

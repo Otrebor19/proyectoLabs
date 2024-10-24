@@ -37,6 +37,7 @@ app.use('/api/clientes', clienteRoutes);
 const productRoutes = require('./routes/productRoutes'); // Importar tus rutas
 app.use(productRoutes);
 
+
 // Importar las rutas de login
 const loginRoutes = require('./routes/loginRoutes'); // Para la autenticación/login
 app.use('/api/auth', loginRoutes); // Rutas del login bajo "/api/auth"

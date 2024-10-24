@@ -1,5 +1,5 @@
 const stripe = require('stripe')('sk_test_51OxE7hFhc7H0Vh4wc7EYx8gUdB9i1hb5AowMD9iWaQMldLK8l9ODkRlMKnnOgIhATxD8X8tijjHYEtXz9yRZYFOb00xnratiCC'); // Clave secreta
-const connectToDB = require('../db'); // Si es necesario acceder a tu base de datos
+const connectToDB = require('../config/db'); // Si es necesario acceder a tu base de datos
 
 // Controlador para crear un PaymentIntent
 async function createPaymentIntent(req, res) {

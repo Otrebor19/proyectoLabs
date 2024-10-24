@@ -1,4 +1,4 @@
-const connectToDB = require('../db'); // Importar la función desde db.js
+const connectToDB = require('../config/db'); // Importar la función desde db.js
 
 // Obtener producto por ID
 async function getProductById(req, res) {

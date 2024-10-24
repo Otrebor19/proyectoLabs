@@ -3,7 +3,7 @@ import Footer from './components/Footer';
 import Header from './components/Header';
 import { CartProvider } from './context/CartContext';
 import MainSection from './components/MainSection';
-import Products from './components/Products';
+import GeneroSection from './components/GeneroSection';
 import CartPage from './pages/CartPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import RegisterPage from './pages/RegisterPage';
@@ -31,7 +31,7 @@ function App() {
           element={(
             <>
               <MainSection />
-              <Products />
+              <GeneroSection />
             </>
           )}
         />

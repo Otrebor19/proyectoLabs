@@ -1,5 +1,5 @@
 // controllers/categoriasController.js
-const connectToDB = require('../db'); // Importa la función de conexión a la DB
+const connectToDB = require('../config/db'); // Importa la función de conexión a la DB
 
 async function getCategorias(req, res) {
   let connection;

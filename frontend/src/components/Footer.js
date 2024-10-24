@@ -55,7 +55,7 @@ const Footer = () => {
       </div>
 
       <div className="mt-8 border-t border-gray-700 pt-4 text-center">
-        <p className="text-gray-400">&copy; 2024 Nombre de tu Empresa. Todos los derechos reservados.</p>
+        <p className="text-gray-400">&copy; 2024 LABS. Todos los derechos reservados.</p>
       </div>
     </footer>
   );

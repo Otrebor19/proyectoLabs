@@ -1,4 +1,4 @@
-const connectToDB = require('../db'); // Importar la función desde db.js
+const connectToDB = require('../config/db'); // Importar la función desde db.js
 const jwt = require('jsonwebtoken'); 
 const secretKey = 'yourSecretKey';
 // Función para manejar el login
@@ -27,7 +27,7 @@ async function loginCliente(req, res) {
       // Login exitoso
       const cliente = result.rows[0];
       const token = jwt.sign(
-        { clienteId: cliente[0], correo_electronico: cliente[3] }, // Datos del payload
+        { clienteId: cliente[0], correo_electronico: cliente[3], nombre: cliente[1] }, // Datos del payload
         'yourSecretKey', // Clave secreta para firmar el token
         { expiresIn: '1h' } // Tiempo de expiración
       );

@@ -1,4 +1,4 @@
-const connectToDB = require('../db');
+const connectToDB = require('../config/db');
 
 // Obtener el carrito de un cliente
 async function getCarritoByCliente(req, res) {

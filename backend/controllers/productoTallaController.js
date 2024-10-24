@@ -1,4 +1,4 @@
-const connectToDB = require('../db');
+const connectToDB = require('../config/db');
 
 // Controlador para obtener las tallas de un producto por su ID
 async function getTallasByProducto(req, res) {
