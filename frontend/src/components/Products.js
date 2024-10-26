@@ -26,25 +26,33 @@ const Products = () => {
   };
 
   // Función para obtener las categorías
-  const getCategorias = async () => {
-    try {
-      const response = await fetchCategorias();
-      setCategories(response.data);
-    } catch (error) {
-      console.error('Error al obtener las categorías:', error);
-      setError('Error al cargar las categorías');
-    }
-  };
+  // Función para obtener las categorías
+// Función para obtener las categorías
+const getCategorias = async () => {
+  try {
+    const response = await fetchCategorias();
+    
+    // Mapear los datos recibidos para convertirlos en objetos con propiedades claras
+    const categoriasMapeadas = response.data.map(row => ({
+      categoria_id: row[0], // Asume que el ID está en la posición 0
+      nombre_categoria: row[1] // Asume que el nombre de la categoría está en la posición 1
+    }));
+    
+    setCategories(categoriasMapeadas);
+  } catch (error) {
+    console.error('Error al obtener las categorías:', error);
+    setError('Error al cargar las categorías');
+  }
+};
+
+
 
   // Obtener productos y categorías cuando el componente se monta
   useEffect(() => {
     getProductos();
     getCategorias();
   }, []);
-  useEffect(() => {
-    console.log("Productos recibidos:", products);
-  }, [products]);
-
+  
   // Función para manejar la búsqueda
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);

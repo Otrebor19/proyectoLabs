@@ -6,7 +6,7 @@ import { fetchTallasByProducto } from '../services/api'; // Función para obtene
 const ProductCard = ({ product }) => {
   const { addToCart } = useContext(CartContext); // Usar la función addToCart del contexto
   const navigate = useNavigate(); 
-  console.log("Producto recibido en ProductCard:", product);
+  
   const [addedToCart, setAddedToCart] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para manejar la visibilidad del modal
   const [tallas, setTallas] = useState([]); // Estado para almacenar las tallas del producto
