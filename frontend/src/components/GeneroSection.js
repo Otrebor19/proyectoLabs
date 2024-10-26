@@ -8,7 +8,7 @@ const GeneroSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
           
           {/* Banner Hombres */}
-          <div className="relative ">
+          <div className="relative hover:opacity-90">
             <img
               src="https://static.nike.com/a/images/f_auto/dpr_1.0,cs_srgb/h_743,c_limit/8c47d0e6-78a7-4f39-8b39-092d7288ac4b/nike-just-do-it.jpg" // Imagen de referencia
               alt="Hombres"
@@ -20,7 +20,7 @@ const GeneroSection = () => {
           </div>
           
           {/* Banner Mujeres */}
-          <div className="relative">
+          <div className="relative hover:opacity-90">
             <img
               src="https://static.nike.com/a/images/f_auto/dpr_1.0,cs_srgb/h_743,c_limit/bbdf6db7-16db-487b-9f3b-55fbd4a9a12a/nike-just-do-it.jpg" // Imagen de referencia
               alt="Mujeres"
@@ -32,7 +32,7 @@ const GeneroSection = () => {
           </div>
           
           {/* Banner Niños */}
-          <div className="relative">
+          <div className="relative hover:opacity-90">
             <img
               src="https://static.nike.com/a/images/f_auto/dpr_1.0,cs_srgb/h_743,c_limit/c783fe93-2375-4d2e-974c-ae6d502a58e4/nike-just-do-it.jpg" // Imagen de referencia
               alt="Niños"

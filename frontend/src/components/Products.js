@@ -16,15 +16,7 @@ const Products = () => {
   const getProductos = async () => {
     try {
       const response = await fetchProductos();
-      const productos = response.data.map(row => ({
-        producto_id: row[0],
-        nombre: row[2],
-        descripcion: row[3],
-        precio: row[4],
-        imagen_url: row[12],
-        categoria_id: row[5], // Asegúrate de tener la categoría aquí
-      }));
-      setProducts(productos);
+      setProducts(response.data);
       setLoading(false);
     } catch (error) {
       console.error('Error al obtener los productos:', error);
@@ -37,11 +29,7 @@ const Products = () => {
   const getCategorias = async () => {
     try {
       const response = await fetchCategorias();
-      const categorias = response.data.map(row => ({
-        categoria_id: row[0],
-        nombre_categoria: row[1],
-      }));
-      setCategories(categorias);
+      setCategories(response.data);
     } catch (error) {
       console.error('Error al obtener las categorías:', error);
       setError('Error al cargar las categorías');
@@ -53,6 +41,9 @@ const Products = () => {
     getProductos();
     getCategorias();
   }, []);
+  useEffect(() => {
+    console.log("Productos recibidos:", products);
+  }, [products]);
 
   // Función para manejar la búsqueda
   const handleSearchChange = (e) => {
@@ -66,8 +57,8 @@ const Products = () => {
 
   // Filtrar los productos según el término de búsqueda y la categoría seleccionada
   const filteredProducts = products.filter((product) => {
-    const matchesSearchTerm = product.nombre.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === '' || product.categoria_id === Number(selectedCategory);
+    const matchesSearchTerm = product.NOMBRE && product.NOMBRE.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === '' || product.CATEGORIA_ID === Number(selectedCategory);
     return matchesSearchTerm && matchesCategory;
   });
 
@@ -108,7 +99,7 @@ const Products = () => {
           </div>
 
           {filteredProducts.map((product) => (
-            <ProductCard key={product.producto_id} product={product} />
+            <ProductCard key={product.PRODUCTO_ID} product={product} />
           ))}
         </div>
       </div>

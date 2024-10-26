@@ -20,8 +20,43 @@ export const createPaymentIntent = (paymentData) => {
 
 
 // Funciones para manejar peticiones específicas
+// Funciones para manejar peticiones específicas
 export const fetchProductos = () => {
-  return api.get('/productos'); // Realiza una solicitud GET a la ruta '/productos'
+  return api.get('/products'); // Realiza una solicitud GET a la ruta '/productos'
+};
+
+// Eliminar un producto por ID
+export const deleteProducto = async (productoId) => {
+  try {
+    await api.delete(`/productos/${productoId}`); // Usar la instancia de api
+  } catch (error) {
+    console.error('Error al eliminar el producto:', error);
+    throw error;
+  }
+};
+
+export const updateProducto = async (productoId, productoData) => {
+  try {
+    await api.put(`/productos/${productoId}`, productoData); // Usar la instancia de api
+  } catch (error) {
+    if (error.response) {
+      console.error('Error al actualizar el producto:', error.response.data);
+    } else {
+      console.error('Error al actualizar el producto:', error.message);
+    }
+    throw error;
+  }
+};
+
+
+// Crear un nuevo producto
+export const createProducto = async (productoData) => {
+  try {
+    await api.post('/productos', productoData); // Usar la instancia de api
+  } catch (error) {
+    console.error('Error al crear el producto:', error);
+    throw error;
+  }
 };
 
 // Función para obtener las categorías

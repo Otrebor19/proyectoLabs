@@ -6,18 +6,18 @@ import { fetchTallasByProducto } from '../services/api'; // Función para obtene
 const ProductCard = ({ product }) => {
   const { addToCart } = useContext(CartContext); // Usar la función addToCart del contexto
   const navigate = useNavigate(); 
-
+  console.log("Producto recibido en ProductCard:", product);
   const [addedToCart, setAddedToCart] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para manejar la visibilidad del modal
   const [tallas, setTallas] = useState([]); // Estado para almacenar las tallas del producto
   const [selectedTalla, setSelectedTalla] = useState(''); // Estado para manejar la talla seleccionada
-
+  
   // Función para abrir el modal
   const openModal = async () => {
     setIsModalOpen(true);
     // Obtener las tallas del producto
     try {
-      const response = await fetchTallasByProducto(product.producto_id);
+      const response = await fetchTallasByProducto(product.PRODUCTO_ID);
       setTallas(response.data);
     } catch (error) {
       console.error('Error al obtener las tallas:', error);
@@ -48,29 +48,26 @@ const ProductCard = ({ product }) => {
 
   // Redirigir al usuario a la página de detalles del producto
   const handleNavigateToDetail = () => {
-    navigate(`/productos/${product.producto_id}`);
+    navigate(`/productos/${product.PRODUCTO_ID}`);
   };
 
   return (
     <div className="relative rounded-xl p-5 mx-auto grid grid-cols-1 lg:grid-cols-1 gap-1 bg-white bg-opacity-5">
       <img 
-        src={product.imagen_url} 
-        alt={product.nombre}  
-        className="object-cover w-[350px] h-[250px] cursor-pointer" 
+        src={product.IMAGEN_URL} 
+        alt={product.NOMBRE}  
+        className="object-cover w-[350px] h-[300px] cursor-pointer" 
         onClick={handleNavigateToDetail} 
       />
-      <div className="flex flex-col justify-center space-y-2">
+      <div className="flex flex-col justify-center space-y-0">
         <h2 
           className="text-white text-[38px] font-sans mt-0 cursor-pointer"
           onClick={handleNavigateToDetail}
         >
-          {product.nombre}
+          {product.NOMBRE}
         </h2>
-  
-        
-        
-        <div className="text-green-400 text-[42px] font-bold font-fprecio">
-          {product.precio} $
+        <div className="text-green-400 text-[36px] font-bold font-fprecio">
+          {product.PRECIO} $
         </div>
         <button
           onClick={openModal} // Abrir el modal al hacer clic

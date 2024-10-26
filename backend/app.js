@@ -24,8 +24,8 @@ app.use('/api', checkoutRoutes); // Aquí es donde usas las rutas de checkout
 
 app.use('/public', express.static('public'));
 // Importar las rutas de la API
-const productosRoutes = require('./routes/productos');
-app.use('/api/productos', productosRoutes);
+const productosRoutes = require('./routes/productosRoutes');
+app.use('/api', productosRoutes);
 
 const categoriasRouter = require('./routes/categorias');
 app.use('/api/categorias', categoriasRouter);

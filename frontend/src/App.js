@@ -4,6 +4,7 @@ import Header from './components/Header';
 import { CartProvider } from './context/CartContext';
 import MainSection from './components/MainSection';
 import GeneroSection from './components/GeneroSection';
+import DashboardPage from './pages/DashboardPage';
 import CartPage from './pages/CartPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import RegisterPage from './pages/RegisterPage';
@@ -17,8 +18,8 @@ function App() {
   const location = useLocation(); // Usar useLocation para obtener la ruta actual
 
   // Definir datos de productos
-  const hideHeaderRoutes = ['/register', '/login', '/checkout']; // Rutas donde no quieres mostrar el header
- 
+  const hideHeaderRoutes = ['/register', '/login', '/checkout', '/dashboard']; // Rutas donde no quieres mostrar el header
+  const hideFooterRoutes = ['/register', '/login', '/checkout', '/dashboard'];
   return (
     <CartProvider>
     <div className="App bg-custom-gradient">
@@ -42,8 +43,9 @@ function App() {
         <Route path="/productos/:id/relacionados" element={<ProductDetailPage />} />
         <Route path="/checkout" element={<CheckoutPage />} /> {/* Ruta de checkout */}
         <Route path="/allproducts" element={<TodoProductosPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} /> 
       </Routes>
-      <Footer />
+      {!hideFooterRoutes.includes(location.pathname) && <Footer />}
     </div>
     </CartProvider>
   );
