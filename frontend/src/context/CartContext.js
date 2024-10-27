@@ -42,9 +42,10 @@ const addToCart = (product) => {
 
 // Función para eliminar productos del carrito
 const removeFromCart = (uniqueId) => {
-  removeProductFromCart(uniqueId); // Usa la función de cartUtils.js
+  removeProductFromCart(uniqueId); // Usa la función de cartUtils.js para eliminar el producto usando unique_id
   setCartItems((prevItems) => prevItems.filter(item => item.unique_id !== uniqueId));
 };
+
 
 
   // Función para contar el total de productos en el carrito

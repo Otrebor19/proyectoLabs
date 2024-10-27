@@ -31,6 +31,8 @@ export const removeFromCart = (uniqueId) => {
   saveCart(cart); // Reutilizamos la función para guardar el carrito
 };
 
+
+
 // Actualizar la cantidad de un producto en el carrito
 export const updateCart = (uniqueId, quantity) => {
   let cart = getCart();

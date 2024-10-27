@@ -83,11 +83,12 @@ const CartModal = ({ isCartOpen, toggleCart }) => {
   <div className="flex items-center">
     <span className="text-[14px] font-bold text-white">{product.PRECIO} $</span>
     <button
-      onClick={() => removeFromCart(product.PRODUCTO_ID)} // Cambiar esto también para que coincida
-      className="ml-2 text-red-500 hover:text-red-700"
-    >
-      <XIcon className="h-5 w-5" />
-    </button>
+  onClick={() => removeFromCart(product.unique_id)} // Cambiar PRODUCTO_ID por unique_id
+  className="ml-2 text-red-500 hover:text-red-700"
+>
+  <XIcon className="h-5 w-5" />
+</button>
+
   </div>
 </div>
 
