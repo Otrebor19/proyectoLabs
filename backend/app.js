@@ -25,7 +25,7 @@ app.use('/api', checkoutRoutes); // Aquí es donde usas las rutas de checkout
 app.use('/public', express.static('public'));
 // Importar las rutas de la API
 const productosRoutes = require('./routes/productosRoutes');
-app.use('/api', productosRoutes);
+app.use('/api/', productosRoutes);
 
 const categoriasRouter = require('./routes/categorias');
 app.use('/api/categorias', categoriasRouter);
@@ -37,6 +37,9 @@ app.use('/api/clientes', clienteRoutes);
 const productRoutes = require('./routes/productRoutes'); // Importar tus rutas
 app.use(productRoutes);
 
+const tallasRoutes = require('./routes/tallasRoutes');
+app.use('/api/tallas', tallasRoutes);
+
 
 // Importar las rutas de login
 const loginRoutes = require('./routes/loginRoutes'); // Para la autenticación/login
@@ -44,7 +47,7 @@ app.use('/api/auth', loginRoutes); // Rutas del login bajo "/api/auth"
 
 // Importar las rutas de tallas de productos
 const productoTallaRoutes = require('./routes/productoTallaRoutes');
-app.use('/api', productoTallaRoutes); // Montar las rutas
+app.use('/api/producto_talla', productoTallaRoutes); // Montar las rutas
 
 
 const cookieParser = require('cookie-parser');

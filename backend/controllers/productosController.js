@@ -70,13 +70,22 @@ const addProduct = async (req, res) => {
   try {
     connection = await connectToDB();
     const { nombre, descripcion, precio, categoria_id, marca, stock, imagen_url } = req.body;
-    await connection.execute(
-      `INSERT INTO PRODUCTO (NOMBRE, DESCRIPCION, PRECIO, CATEGORIA_ID, MARCA, STOCK, IMAGEN_URL, FECHA_CREACION, FECHA_ACTUALIZACION)
-       VALUES (:nombre, :descripcion, :precio, :categoria_id, :marca, :stock, :imagen_url, SYSDATE, SYSDATE)`,
+
+    // Insertar el producto en la tabla PRODUCTO
+    const result = await connection.execute(
+      `INSERT INTO PRODUCTO (PRODUCTO_ID, NOMBRE, DESCRIPCION, PRECIO, CATEGORIA_ID, MARCA, STOCK, IMAGEN_URL, FECHA_CREACION, FECHA_ACTUALIZACION)
+       VALUES (producto_seq.NEXTVAL, :nombre, :descripcion, :precio, :categoria_id, :marca, :stock, :imagen_url, SYSDATE, SYSDATE)`,
       [nombre, descripcion, precio, categoria_id, marca, stock, imagen_url],
       { autoCommit: true }
     );
-    res.status(201).json({ message: 'Producto añadido correctamente' });
+
+    // Obtener el ID del producto recién insertado
+    const productoIdResult = await connection.execute(
+      `SELECT producto_seq.CURRVAL as productoId FROM dual`
+    );
+    const productoId = productoIdResult.rows[0][0]; // Asegúrate de obtener el ID del producto recién insertado
+
+    res.status(201).json({ message: 'Producto añadido correctamente', productoId });
   } catch (error) {
     console.error('Error al añadir el producto:', error);
     res.status(500).json({ error: 'Error al añadir el producto' });
@@ -90,6 +99,8 @@ const addProduct = async (req, res) => {
     }
   }
 };
+
+
 
 // Actualizar un producto existente
 const updateProduct = async (req, res) => {

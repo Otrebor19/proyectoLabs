@@ -1,45 +1,69 @@
 const connectToDB = require('../config/db');
 
 // Controlador para obtener las tallas de un producto por su ID
-async function getTallasByProducto(req, res) {
+const getTallasByProducto = async (req, res) => {
   let connection;
-  const productId = req.params.id;
-
   try {
+    const productoId = req.params.id;
     connection = await connectToDB();
 
-    // Consulta SQL para obtener las tallas del producto
-    const query = `
-      SELECT t.TALLA_ID, t.NOMBRE_TALLA, pt.CANTIDAD
-      FROM PRODUCTO_TALLA pt
-      JOIN TALLA t ON pt.TALLA_ID = t.TALLA_ID
-      WHERE pt.PRODUCTO_ID = :productId
-    `;
+    // Hacer un JOIN para obtener el nombre de la talla desde la tabla TALLA
+    const result = await connection.execute(
+      `SELECT pt.TALLA_ID, t.NOMBRE_TALLA, pt.CANTIDAD
+       FROM PRODUCTO_TALLA pt
+       JOIN TALLA t ON pt.TALLA_ID = t.TALLA_ID
+       WHERE pt.PRODUCTO_ID = :productoId`,
+      [productoId]
+    );
 
-    const result = await connection.execute(query, { productId });
-
-    if (result.rows.length > 0) {
-      // Mapea las filas para devolver los resultados en un formato adecuado
-      const tallas = result.rows.map(row => ({
-        talla_id: row[0],
-        nombre_talla: row[1],
-        cantidad: row[2],
-      }));
-
-      res.json(tallas);
-    } else {
-      res.status(404).json({ message: 'No hay tallas disponibles para este producto' });
-    }
+    res.status(200).json(result.rows);
   } catch (error) {
-    console.error('Error al obtener las tallas:', error);
-    res.status(500).json({ message: 'Error al obtener las tallas del producto' });
+    console.error('Error al obtener las tallas del producto:', error);
+    res.status(500).json({ error: 'Error al obtener las tallas del producto' });
   } finally {
     if (connection) {
-      await connection.close();
+      try {
+        await connection.close();
+      } catch (closeError) {
+        console.error('Error al cerrar la conexión:', closeError);
+      }
     }
   }
-}
+};
+
+const addProductoTalla = async (req, res) => {
+  let connection;
+  try {
+    connection = await connectToDB();
+    const { producto_id, tallas } = req.body;
+
+    if (Array.isArray(tallas) && tallas.length > 0) {
+      for (let talla of tallas) {
+        await connection.execute(
+          `INSERT INTO PRODUCTO_TALLA (PRODUCTO_ID, TALLA_ID, CANTIDAD)
+           VALUES (:producto_id, :talla_id, :cantidad)`,
+          [producto_id, talla.talla_id, talla.cantidad],
+          { autoCommit: true }
+        );
+      }
+      res.status(201).json({ message: 'Tallas añadidas correctamente al producto' });
+    } else {
+      res.status(400).json({ error: 'No se han proporcionado tallas válidas para insertar' });
+    }
+  } catch (error) {
+    console.error('Error al añadir tallas al producto:', error);
+    res.status(500).json({ error: 'Error al añadir tallas al producto' });
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (closeError) {
+        console.error('Error al cerrar la conexión:', closeError);
+      }
+    }
+  }
+};
 
 module.exports = {
-  getTallasByProducto,
+  getTallasByProducto,  addProductoTalla,
 };

@@ -89,10 +89,24 @@ export const loginCliente = async (formData) => {
   }
 };
 
-
+export const fetchTallas = async () => {
+  try {
+    const response = await axios.get('http://localhost:3000/api/tallas');
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener las tallas:', error);
+    throw error;
+  }
+};
 
 export const fetchTallasByProducto = async (productoId) => {
-  return await api.get(`/productos/${productoId}/tallas`); // Usar api en lugar de axios
+  try {
+    const response = await axios.get(`http://localhost:3000/api/producto_talla/producto/${productoId}`);
+    return response;
+  } catch (error) {
+    console.error('Error al obtener las tallas:', error);
+    throw error;
+  }
 };
 
 

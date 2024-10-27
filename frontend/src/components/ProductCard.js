@@ -6,7 +6,7 @@ import { fetchTallasByProducto } from '../services/api'; // Función para obtene
 const ProductCard = ({ product }) => {
   const { addToCart } = useContext(CartContext); // Usar la función addToCart del contexto
   const navigate = useNavigate(); 
-  
+  console.log("Producto recibido en ProductCard:", product);
   const [addedToCart, setAddedToCart] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para manejar la visibilidad del modal
   const [tallas, setTallas] = useState([]); // Estado para almacenar las tallas del producto
@@ -18,7 +18,12 @@ const ProductCard = ({ product }) => {
     // Obtener las tallas del producto
     try {
       const response = await fetchTallasByProducto(product.PRODUCTO_ID);
-      setTallas(response.data);
+      const formattedTallas = response.data.map(talla => ({
+        TALLA_ID: talla[0],
+        NOMBRE_TALLA: talla[1],
+        CANTIDAD: talla[2],
+      }));
+      setTallas(formattedTallas);
     } catch (error) {
       console.error('Error al obtener las tallas:', error);
     }
@@ -56,17 +61,18 @@ const ProductCard = ({ product }) => {
       <img 
         src={product.IMAGEN_URL} 
         alt={product.NOMBRE}  
-        className="object-cover w-[350px] h-[300px] cursor-pointer" 
+        className="object-cover w-[350px] h-[250px] cursor-pointer" 
         onClick={handleNavigateToDetail} 
       />
-      <div className="flex flex-col justify-center space-y-0">
+      <div className="flex flex-col justify-center space-y-2">
         <h2 
           className="text-white text-[38px] font-sans mt-0 cursor-pointer"
           onClick={handleNavigateToDetail}
         >
           {product.NOMBRE}
         </h2>
-        <div className="text-green-400 text-[36px] font-bold font-fprecio">
+  
+        <div className="text-green-400 text-[42px] font-bold font-fprecio">
           {product.PRECIO} $
         </div>
         <button
@@ -93,9 +99,9 @@ const ProductCard = ({ product }) => {
               className="w-full p-2 border-b-2 shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] shadow-white backdrop-blur-sm bg-transparent text-white border-gray-300 mb-4"
             >
               <option value="">Selecciona una talla</option>
-              {tallas.map((talla) => (
-                <option className="w-full bg-transparent backdrop-blur-sm p-2 border-b-2 text-black   font-semibold border-gray-300 mb-4" key={talla.talla_id} value={talla.nombre_talla}>
-                  {talla.nombre_talla} (Disponible: {talla.cantidad})
+              {tallas.map((talla, index) => (
+                <option className="w-full bg-transparent backdrop-blur-sm p-2 border-b-2 text-black font-semibold border-gray-300 mb-4" key={`${talla.TALLA_ID}-${index}`} value={talla.TALLA_ID}>
+                  {talla.NOMBRE_TALLA} (Disponible: {talla.CANTIDAD})
                 </option>
               ))}
             </select>

@@ -1,8 +1,9 @@
 const express = require('express');
-const { getTallasByProducto } = require('../controllers/productoTallaController'); // Importa el controlador
+const { getTallasByProducto, addProductoTalla } = require('../controllers/productoTallaController'); // Importa el controlador
 const router = express.Router();
 
 // Ruta para obtener las tallas de un producto
-router.get('/productos/:id/tallas', getTallasByProducto);
+router.get('/producto/:id', getTallasByProducto);
 
+router.post('/', addProductoTalla);
 module.exports = router;

@@ -22,7 +22,7 @@ function App() {
   const hideFooterRoutes = ['/register', '/login', '/checkout', '/dashboard'];
   return (
     <CartProvider>
-    <div className="App bg-custom-gradient">
+    <div className="App  bg-custom-gradient">
       {/* Mostrar el header solo si la ruta actual no está en hideHeaderRoutes */}
       {!hideHeaderRoutes.includes(location.pathname) && <Header />}
       

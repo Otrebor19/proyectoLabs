@@ -42,8 +42,8 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="p-6 h-screen">
-      <h1 className="text-3xl text-white font-bold mb-6">Dashboard de Productos</h1>
+    <div className="p-6   min-h-screen  ">
+      
       {isAdding || editingProduct ? (
         <ProductFormComponent
           product={editingProduct}
@@ -57,7 +57,7 @@ const DashboardPage = () => {
         <div>
           <button
             onClick={() => setIsAdding(true)}
-            className="mb-4 px-4 py-2 bg-green-600  text-white rounded-md"
+            className="mb-4 px-4 py-2 bg-green-600  text-white flex justify-end rounded-md"
           >
             Añadir Producto
           </button>
