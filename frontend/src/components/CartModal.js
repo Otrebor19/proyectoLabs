@@ -67,7 +67,7 @@ const CartModal = ({ isCartOpen, toggleCart }) => {
         {/* Lista de productos en el carrito */}
         <div className="mb-4 space-y-4 flex-grow">
           {cartItems.length > 0 ? (
-           cartItems.map((product, index) => (
+           cartItems.map((product) => (
             <div key={product.PRODUCTO_ID} className="flex justify-between items-center">
   <div className="flex items-center">
     <img 

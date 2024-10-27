@@ -109,7 +109,7 @@ const CartPage = () => {
                   </div>
 
                   <button
-                    onClick={() => removeFromCart(product.producto_id)}
+                    onClick={() => removeFromCart(product.PRODUCTO_ID)}
                     className="text-red-500 hover:text-red-700 ml-2 sm:ml-4"
                   >
                     <XIcon className="h-5 w-5" />
