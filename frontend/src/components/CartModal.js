@@ -67,29 +67,30 @@ const CartModal = ({ isCartOpen, toggleCart }) => {
         {/* Lista de productos en el carrito */}
         <div className="mb-4 space-y-4 flex-grow">
           {cartItems.length > 0 ? (
-            cartItems.map((product) => (
-              <div key={product.producto_id} className="flex justify-between items-center">
-                <div className="flex items-center">
-                  <img 
-                    src={product.imagen_url} 
-                    alt={product.nombre} 
-                    className="w-10 h-10 rounded-lg mr-2" 
-                  />
-                  <div>
-                    <h3 className="text-[14px] text-left text-white">{product.nombre}</h3>
-                    <p className="text-sm text-white text-justify">Cantidad: {product.quantity}</p>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-[14px] font-bold text-white">{product.precio} $</span>
-                  <button
-                    onClick={() => removeFromCart(product.producto_id)} // Eliminar producto
-                    className="ml-2 text-red-500 hover:text-red-700"
-                  >
-                    <XIcon className="h-5 w-5" />
-                  </button>
-                </div>
-              </div>
+           cartItems.map((product, index) => (
+            <div key={product.PRODUCTO_ID} className="flex justify-between items-center">
+  <div className="flex items-center">
+    <img 
+      src={product.IMAGEN_URL} 
+      alt={product.NOMBRE} 
+      className="w-10 h-10 rounded-lg mr-2" 
+    />
+    <div>
+      <h3 className="text-[14px] text-left text-white">{product.NOMBRE}</h3>
+      <p className="text-sm text-white text-justify">Cantidad: {product.quantity}</p>
+    </div>
+  </div>
+  <div className="flex items-center">
+    <span className="text-[14px] font-bold text-white">{product.PRECIO} $</span>
+    <button
+      onClick={() => removeFromCart(product.PRODUCTO_ID)} // Cambiar esto también para que coincida
+      className="ml-2 text-red-500 hover:text-red-700"
+    >
+      <XIcon className="h-5 w-5" />
+    </button>
+  </div>
+</div>
+
             ))
           ) : (
             <p className="text-white">El carrito está vacío.</p>

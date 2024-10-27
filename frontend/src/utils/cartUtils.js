@@ -9,9 +9,11 @@ const saveCart = (cart) => {
 };
 
 // Agregar un producto al carrito
+// Agregar un producto al carrito
+// Agregar un producto al carrito
 export const addToCart = (product) => {
   let cart = getCart();
-  const existingProduct = cart.find(item => item.producto_id === product.producto_id);
+  const existingProduct = cart.find(item => item.unique_id === product.unique_id);
 
   if (existingProduct) {
     existingProduct.quantity += 1;
@@ -23,22 +25,22 @@ export const addToCart = (product) => {
 };
 
 // Eliminar un producto del carrito
-export const removeFromCart = (productId) => {
+export const removeFromCart = (uniqueId) => {
   let cart = getCart();
-  cart = cart.filter(item => item.producto_id !== productId);
+  cart = cart.filter(item => item.unique_id !== uniqueId);
   saveCart(cart); // Reutilizamos la función para guardar el carrito
 };
 
 // Actualizar la cantidad de un producto en el carrito
-export const updateCart = (productId, quantity) => {
+export const updateCart = (uniqueId, quantity) => {
   let cart = getCart();
-  const product = cart.find(item => item.producto_id === productId);
+  const product = cart.find(item => item.unique_id === uniqueId);
 
   if (product) {
     if (quantity > 0) {
       product.quantity = quantity; // Actualizar la cantidad si es mayor que 0
     } else {
-      cart = cart.filter(item => item.producto_id !== productId); // Eliminar si la cantidad es 0
+      cart = cart.filter(item => item.unique_id !== uniqueId); // Eliminar si la cantidad es 0
     }
   }
 

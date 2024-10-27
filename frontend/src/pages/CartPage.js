@@ -31,9 +31,9 @@ const CartPage = () => {
     setCart(savedCart);
   }, []);
 
-  const updateQuantity = (producto_id, newQuantity) => {
+  const updateQuantity = (PRODUCTO_ID, newQuantity) => {
     const updatedCart = cart.map((item) =>
-      item.producto_id === producto_id
+      item.PRODUCTO_ID === PRODUCTO_ID
         ? { ...item, quantity: Math.max(1, newQuantity) }
         : item
     );
@@ -41,14 +41,14 @@ const CartPage = () => {
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
-  const removeFromCart = (producto_id) => {
-    const updatedCart = cart.filter((item) => item.producto_id !== producto_id);
+  const removeFromCart = (PRODUCTO_ID) => {
+    const updatedCart = cart.filter((item) => item.PRODUCTO_ID !== PRODUCTO_ID);
     setCart(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
   const calculateTotal = () => {
-    return cart.reduce((total, item) => total + item.precio * item.quantity, 0);
+    return cart.reduce((total, item) => total + item.PRECIO * item.quantity, 0);
   };
 
   const handleCheckout = () => {
@@ -79,29 +79,29 @@ const CartPage = () => {
               <p className="text-lg text-black">Tu carrito está vacío.</p>
             ) : (
               cart.map((product) => (
-                <div key={product.producto_id} className="flex justify-between items-center mb-4 border-b pb-4">
+                <div key={product.PRODUCTO_ID} className="flex justify-between items-center mb-4 border-b pb-4">
                   <div className="flex items-center">
                     <img
-                      src={product.imagen_url}
-                      alt={product.nombre}
+                      src={product.IMAGEN_URL}
+                      alt={product.NOMBRE}
                       className="w-16 sm:w-20 h-16 sm:h-20 object-cover rounded-lg"
                     />
                     <div className="ml-4">
-                      <h3 className="text-base sm:text-xl font-semibold text-black">{product.nombre}</h3>
-                      <p className="text-sm text-black font-bold">{product.precio} $</p>
+                      <h3 className="text-base sm:text-xl font-semibold text-black">{product.NOMBRE}</h3>
+                      <p className="text-sm text-black font-bold">{product.PRECIO} $</p>
                     </div>
                   </div>
 
                   <div className="flex items-center">
                     <button
-                      onClick={() => updateQuantity(product.producto_id, product.quantity - 1)}
+                      onClick={() => updateQuantity(product.PRODUCTO_ID, product.quantity - 1)}
                       className="bg-gray-200 text-gray-700 px-2 py-1 rounded-l-lg hover:bg-gray-300"
                     >
                       -
                     </button>
                     <span className="px-2 sm:px-3 py-1 bg-gray-100 text-gray-800">{product.quantity}</span>
                     <button
-                      onClick={() => updateQuantity(product.producto_id, product.quantity + 1)}
+                      onClick={() => updateQuantity(product.PRODUCTO_ID, product.quantity + 1)}
                       className="bg-gray-200 text-gray-700 px-2 py-1 rounded-r-lg hover:bg-gray-300"
                     >
                       +

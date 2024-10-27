@@ -6,7 +6,7 @@ import { fetchTallasByProducto } from '../services/api'; // Función para obtene
 const ProductCard = ({ product }) => {
   const { addToCart } = useContext(CartContext); // Usar la función addToCart del contexto
   const navigate = useNavigate(); 
-  console.log("Producto recibido en ProductCard:", product);
+  
   const [addedToCart, setAddedToCart] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para manejar la visibilidad del modal
   const [tallas, setTallas] = useState([]); // Estado para almacenar las tallas del producto
@@ -43,13 +43,20 @@ const ProductCard = ({ product }) => {
   // Función para agregar el producto al carrito con la talla seleccionada
   const handleAddToCart = () => {
     if (selectedTalla) {
-      addToCart({ ...product, talla: selectedTalla }); // Agregar el producto con la talla seleccionada al carrito
+      // Crear un identificador único combinando PRODUCTO_ID y TALLA_ID
+      const productToAdd = {
+        ...product,
+        talla: selectedTalla,
+        unique_id: `${product.PRODUCTO_ID}-${selectedTalla}`, // Clave única
+      };
+      addToCart(productToAdd); // Agregar el producto con la talla seleccionada al carrito
       setAddedToCart(true);
       closeModal(); // Cerrar el modal después de agregar al carrito
     } else {
       alert('Por favor, selecciona una talla.');
     }
   };
+  
 
   // Redirigir al usuario a la página de detalles del producto
   const handleNavigateToDetail = () => {

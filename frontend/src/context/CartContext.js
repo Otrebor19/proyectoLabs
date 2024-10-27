@@ -17,19 +17,35 @@ export const CartProvider = ({ children }) => {
   }, []);
 
   // Función para agregar productos al carrito
-  const addToCart = (product) => {
-    addProductToCart(product); // Usa la función de cartUtils.js
-    const updatedCart = getCart(); // Actualizar el estado del carrito con los datos de localStorage
-    console.log("Producto añadido al carrito:", updatedCart); // Verifica si se añade correctamente
-    setCartItems(updatedCart);
-  };
+ // Función para agregar productos al carrito
+// Función para agregar productos al carrito
+const addToCart = (product) => {
+  addProductToCart(product); // Usa la función de cartUtils.js
+  setCartItems((prevItems) => {
+    // Actualiza el estado con los datos más recientes
+    const existingProductIndex = prevItems.findIndex(item => item.unique_id === product.unique_id);
 
-  // Función para eliminar productos del carrito
-  const removeFromCart = (producto_id) => {
-    removeProductFromCart(producto_id); // Usa la función de cartUtils.js
-    const updatedCart = getCart(); // Actualizar el estado del carrito con los datos de localStorage
-    setCartItems(updatedCart);
-  };
+    if (existingProductIndex !== -1) {
+      // Si el producto ya existe, aumenta la cantidad
+      const updatedItems = [...prevItems];
+      updatedItems[existingProductIndex] = {
+        ...updatedItems[existingProductIndex],
+        quantity: updatedItems[existingProductIndex].quantity + 1,
+      };
+      return updatedItems;
+    } else {
+      // Añadir el producto al carrito
+      return [...prevItems, { ...product, quantity: 1 }];
+    }
+  });
+};
+
+// Función para eliminar productos del carrito
+const removeFromCart = (uniqueId) => {
+  removeProductFromCart(uniqueId); // Usa la función de cartUtils.js
+  setCartItems((prevItems) => prevItems.filter(item => item.unique_id !== uniqueId));
+};
+
 
   // Función para contar el total de productos en el carrito
   const getTotalItemsInCart = () => {
