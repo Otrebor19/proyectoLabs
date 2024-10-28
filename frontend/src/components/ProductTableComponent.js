@@ -5,6 +5,7 @@ const ProductTableComponent = ({ onEdit, onDelete }) => {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 5;
+  const maxPageButtons = 10;
 
   useEffect(() => {
     // Fetch all products when the component mounts
@@ -24,12 +25,29 @@ const ProductTableComponent = ({ onEdit, onDelete }) => {
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
 
-  // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  // Calculate total pages
+  const totalPages = Math.ceil(products.length / productsPerPage);
+
+  // Determine the range of page buttons to display
+  const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+  const endPage = Math.min(startPage + maxPageButtons - 1, totalPages);
+
+  // Handlers for pagination buttons
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
     <div className="overflow-x-auto min-h-screen ">
-      <table className="min-w-full   bg-white">
+      <table className="min-w-full  bg-white">
         <thead>
           <tr className="w-full text-center bg-gray-200 ">
             <th className="py-2 px-4">Imagen</th>
@@ -77,15 +95,34 @@ const ProductTableComponent = ({ onEdit, onDelete }) => {
         </tbody>
       </table>
       <div className="flex justify-center mt-4">
-        {Array.from({ length: Math.ceil(products.length / productsPerPage) }, (_, index) => (
+        {currentPage > 1 && (
           <button
-            key={index + 1}
-            onClick={() => paginate(index + 1)}
-            className={`mx-1 px-3 py-1 border ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}
+            onClick={handlePrevious}
+            className="mx-1 px-3 py-1 border bg-white text-black"
           >
-            {index + 1}
+            Anterior
           </button>
-        ))}
+        )}
+        {Array.from({ length: endPage - startPage + 1 }, (_, index) => {
+          const pageNumber = startPage + index;
+          return (
+            <button
+              key={pageNumber}
+              onClick={() => setCurrentPage(pageNumber)}
+              className={`mx-1 px-3 py-1 border ${currentPage === pageNumber ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}
+            >
+              {pageNumber}
+            </button>
+          );
+        })}
+        {currentPage < totalPages && (
+          <button
+            onClick={handleNext}
+            className="mx-1 px-3 py-1 border bg-white text-black"
+          >
+            Siguiente
+          </button>
+        )}
       </div>
     </div>
   );

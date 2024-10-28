@@ -4,7 +4,10 @@ const GeneroSection = () => {
   return (
     <section className="py-12 w-full max-w-[1920px] bg-white h-screen">
       <div className="container mx-auto p-7">
-        <h2 className="text-4xl font-bold text-center mb-8">Lo mejor y más nuevo</h2>
+      <a href='/allproducts' className='text-2xl text-black border-[2px] border-black rounded p-2 hover:bg-custom-gradient hover:text-white' >Todos Los Productos</a>
+        <h2 className="text-4xl font-bold text-center mb-8 mt-8">Lo mejor y más nuevo</h2>
+
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
           
           {/* Banner Hombres */}
