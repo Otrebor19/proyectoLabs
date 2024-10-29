@@ -1,23 +1,33 @@
 import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { CartContext } from '../context/CartContext'; // Importar el contexto del carrito
 import axios from 'axios';
+import SuccessModal from '../components/SuccessModal';
 
 // Cargar la clave pública de Stripe
 const stripePromise = loadStripe('pk_test_51OxE7hFhc7H0Vh4wjBCtxDxUuZ7BSfD0OXWqRD0MsJBN5aGhUPVmd9uTqZmg9suV1KvemjDR9AYmpUDwrcZ1uH7L004DgyQjji');
 
 const CheckoutForm = ({ products, totalAmount }) => {
+  const { clearCart } = useContext(CartContext); 
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const navigate = useNavigate();
   const [buyerInfo, setBuyerInfo] = useState({
     name: '',
     email: '',
     address: '',
   });
+
+
+  const handleCloseModal = () => {
+    setShowSuccessModal(false);
+    navigate('/'); // Redirige a la página principal
+  };
 
   // Manejar cambios en el formulario de información del comprador
   const handleChange = (e) => {
@@ -37,7 +47,8 @@ const CheckoutForm = ({ products, totalAmount }) => {
       const { data } = await axios.post('http://localhost:3000/api/create-payment-intent', {
         amount: totalAmount * 100, // Convertir a centavos
         currency: 'usd',
-        name: buyerInfo.name, // Se envía el nombre del comprador al backend para la transacción
+        name: buyerInfo.name,
+        email: buyerInfo.email, // Se envía el nombre del comprador al backend para la transacción
         products: products // Enviar los productos del carrito al backend
       });
 
@@ -58,10 +69,12 @@ const CheckoutForm = ({ products, totalAmount }) => {
         },
       });
 
+      
       if (error) {
         setErrorMessage(error.message);
       } else if (paymentIntent.status === 'succeeded') {
-        setSuccess(true);
+        setShowSuccessModal(true); // Mostrar modal de éxito
+        clearCart(); // Vaciar el carrito después de una compra exitosa
       }
     } catch (error) {
       setErrorMessage('Error al procesar el pago');
@@ -69,50 +82,25 @@ const CheckoutForm = ({ products, totalAmount }) => {
       setLoading(false);
     }
   };
-
   return (
     <form onSubmit={handleSubmit} className="w-full bg-white p-6 shadow-lg rounded-lg">
       <h2 className="text-2xl font-bold mb-6">Información de Facturación</h2>
-      
+
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {/* Nombre */}
         <div>
           <label className="block text-gray-700">Nombre completo</label>
-          <input
-            type="text"
-            name="name"
-            value={buyerInfo.name}
-            onChange={handleChange}
-            className="border border-gray-300 rounded p-2 w-full"
-            required
-          />
+          <input type="text" name="name" value={buyerInfo.name} onChange={handleChange} className="border border-gray-300 rounded p-2 w-full" required />
         </div>
 
-        {/* Email */}
         <div>
           <label className="block text-gray-700">Correo electrónico</label>
-          <input
-            type="email"
-            name="email"
-            value={buyerInfo.email}
-            onChange={handleChange}
-            className="border border-gray-300 rounded p-2 w-full"
-            required
-          />
+          <input type="email" name="email" value={buyerInfo.email} onChange={handleChange} className="border border-gray-300 rounded p-2 w-full" required />
         </div>
       </div>
 
-      {/* Dirección */}
       <div className="mt-4">
         <label className="block text-gray-700">Dirección de facturación</label>
-        <input
-          type="text"
-          name="address"
-          value={buyerInfo.address}
-          onChange={handleChange}
-          className="border border-gray-300 rounded p-2 w-full"
-          required
-        />
+        <input type="text" name="address" value={buyerInfo.address} onChange={handleChange} className="border border-gray-300 rounded p-2 w-full" required />
       </div>
 
       <div className="mt-6">
@@ -123,17 +111,11 @@ const CheckoutForm = ({ products, totalAmount }) => {
       </div>
 
       {errorMessage && <p className="text-red-500 text-sm mt-4">{errorMessage}</p>}
-      {success ? (
-        <p className="text-green-500 text-center mt-4">Pago completado con éxito</p>
-      ) : (
-        <button
-          type="submit"
-          disabled={!stripe || loading}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mt-4 transition duration-300"
-        >
-          {loading ? 'Procesando...' : `Pagar $${totalAmount}.00`}
-        </button>
-      )}
+      <button type="submit" disabled={!stripe || loading} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mt-4 transition duration-300">
+        {loading ? 'Procesando...' : `Pagar $${totalAmount}.00`}
+      </button>
+
+      {showSuccessModal && <SuccessModal onClose={handleCloseModal} />} {/* Modal de éxito */}
     </form>
   );
 };
@@ -143,7 +125,7 @@ const CheckoutPage = () => {
 
   console.log("Productos en el carrito en CheckoutPage:", cartItems); // Verificar los productos que llegan al checkout
 
-  const totalAmount = cartItems.reduce((total, item) => total + item.precio * item.quantity, 0); // Calcular el total basado en el carrito
+  const totalAmount = cartItems.reduce((total, item) => total + item.PRECIO * item.cantidad, 0); // Calcular el total basado en el carrito
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 flex flex-col items-center">
@@ -153,14 +135,14 @@ const CheckoutPage = () => {
           <h2 className="text-2xl font-bold mb-6 text-center">Resumen de Compra</h2>
           {cartItems.map((product) => (
             
-            <div key={product.producto_id} className="flex  justify-between items-center mb-4">
+            <div key={product.PRODUCTO_ID} className="flex  justify-between items-center mb-4">
                  <img
-                      src={product.imagen_url}
-                      alt={product.nombre}
+                      src={product.IMAGEN_URL}
+                      alt={product.NOMBRE}
                       className="w-16 sm:w-20 h-16 sm:h-20 object-cover rounded-lg"
                     />
-              <p className="font-bold">{product.nombre}</p>
-              <p className="font-bold">${product.precio}.00</p>
+              <p className="font-bold">{product.NOMBRE}</p>
+              <p className="font-bold">${product.PRECIO}.00</p>
             </div>
           ))}
           <hr className="my-4" />

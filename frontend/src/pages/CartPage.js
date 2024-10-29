@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { XIcon } from '@heroicons/react/outline';
+import { CartContext } from '../context/CartContext';
 
 // Componente de Alerta
 const Alert = ({ message, onClose }) => {
@@ -22,37 +23,31 @@ const Alert = ({ message, onClose }) => {
 };
 
 const CartPage = () => {
-  const [cart, setCart] = useState([]);
+  const { cartItems, removeFromCart, addToCart } = useContext(CartContext);
   const [showAlert, setShowAlert] = useState(false); // Estado para controlar la visibilidad del mensaje
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
-    setCart(savedCart);
-  }, []);
-
-  const updateQuantity = (PRODUCTO_ID, newQuantity) => {
-    const updatedCart = cart.map((item) =>
-      item.PRODUCTO_ID === PRODUCTO_ID
-        ? { ...item, quantity: Math.max(1, newQuantity) }
-        : item
-    );
-    setCart(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
+  const updateQuantity = (productoId, change) => {
+    const product = cartItems.find((item) => item.PRODUCTO_ID === productoId);
+  
+    if (!product) return;
+  
+    const newQuantity = product.cantidad + change;
+  
+    if (newQuantity > 0) {
+      addToCart({ producto_id: productoId }, change);
+    } else {
+      removeFromCart(productoId);
+    }
   };
-
-  const removeFromCart = (PRODUCTO_ID) => {
-    const updatedCart = cart.filter((item) => item.PRODUCTO_ID !== PRODUCTO_ID);
-    setCart(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-  };
+  
 
   const calculateTotal = () => {
-    return cart.reduce((total, item) => total + item.PRECIO * item.quantity, 0);
+    return cartItems.reduce((total, item) => total + item.PRECIO * item.cantidad, 0);
   };
 
   const handleCheckout = () => {
-    if (cart.length === 0) {
+    if (cartItems.length === 0) {
       setShowAlert(true); // Mostrar alerta cuando el carrito esté vacío
       return;
     }
@@ -75,10 +70,10 @@ const CartPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Columna izquierda: Productos del carrito */}
           <div className="lg:col-span-2 bg-white p-4 sm:p-6 rounded-lg shadow-md">
-            {cart.length === 0 ? (
+            {cartItems.length === 0 ? (
               <p className="text-lg text-black">Tu carrito está vacío.</p>
             ) : (
-              cart.map((product) => (
+              cartItems.map((product) => (
                 <div key={product.PRODUCTO_ID} className="flex justify-between items-center mb-4 border-b pb-4">
                   <div className="flex items-center">
                     <img
@@ -93,23 +88,24 @@ const CartPage = () => {
                   </div>
 
                   <div className="flex items-center">
-                    <button
-                      onClick={() => updateQuantity(product.PRODUCTO_ID, product.quantity - 1)}
-                      className="bg-gray-200 text-gray-700 px-2 py-1 rounded-l-lg hover:bg-gray-300"
-                    >
-                      -
-                    </button>
-                    <span className="px-2 sm:px-3 py-1 bg-gray-100 text-gray-800">{product.quantity}</span>
-                    <button
-                      onClick={() => updateQuantity(product.PRODUCTO_ID, product.quantity + 1)}
-                      className="bg-gray-200 text-gray-700 px-2 py-1 rounded-r-lg hover:bg-gray-300"
-                    >
-                      +
-                    </button>
+                  <button
+  onClick={() => updateQuantity(product.PRODUCTO_ID, -1)}
+  className="bg-gray-200 text-gray-700 px-2 py-1 rounded-l-lg hover:bg-gray-300"
+>
+  -
+</button>
+<span className="px-2 sm:px-3 py-1 bg-gray-100 text-gray-800">{product.cantidad}</span>
+<button
+  onClick={() => updateQuantity(product.PRODUCTO_ID, +1)}
+  className="bg-gray-200 text-gray-700 px-2 py-1 rounded-r-lg hover:bg-gray-300"
+>
+  +
+</button>
+
                   </div>
 
                   <button
-                    onClick={() => removeFromCart(product.PRODUCTO_ID)}
+                    onClick={() => removeFromCart(product.producto_id)}
                     className="text-red-500 hover:text-red-700 ml-2 sm:ml-4"
                   >
                     <XIcon className="h-5 w-5" />
@@ -124,7 +120,7 @@ const CartPage = () => {
             <h2 className="text-lg sm:text-2xl font-semibold mb-4 text-black">Resumen del Pedido</h2>
             <div className="flex justify-between mb-2 sm:mb-4">
               <span className="text-sm sm:text-lg font-medium text-black">Total de productos:</span>
-              <span className="text-sm sm:text-lg text-black">{cart.length} items</span>
+              <span className="text-sm sm:text-lg text-black">{cartItems.length} items</span>
             </div>
 
             <div className="flex justify-between mb-2 sm:mb-4">

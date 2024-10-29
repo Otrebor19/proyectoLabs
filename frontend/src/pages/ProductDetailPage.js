@@ -1,21 +1,22 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { fetchProductoById, fetchRelatedProducts } from '../services/api'; // Función de la API
+import { fetchProductoById, fetchProductos } from '../services/api'; // Función de la API
 import Slider from 'react-slick'; // Importamos el carrusel
-import ProductCard from '../components/ProductCard'; // Componente para mostrar productos relacionados
+import ProductCard from '../components/ProductCard'; // Componente para mostrar productos
 import { CartContext } from '../context/CartContext'; // Importar el contexto del carrito
 
 const ProductDetailPage = () => {
   const { id } = useParams(); // Obtener el ID del producto de la URL
   const [product, setProduct] = useState(null); // Estado para almacenar el producto
-  const [relatedProducts, setRelatedProducts] = useState([]); // Estado para almacenar productos relacionados
+  const [allProducts, setAllProducts] = useState([]); // Estado para almacenar todos los productos
   const [rating, setRating] = useState(0); // Estado para la calificación
   const { addToCart: addProductToCart, cart = [] } = useContext(CartContext); // Extraer addToCart y el carrito del contexto con un valor predeterminado como arreglo vacío
   const [addedToCart, setAddedToCart] = useState(false); // Estado para controlar si el producto ha sido añadido al carrito
 
   useEffect(() => {
     // Obtener el producto por ID cuando se monta el componente
+    console.log('Product ID:', id);
     const getProduct = async () => {
       try {
         const response = await fetchProductoById(id);
@@ -25,18 +26,18 @@ const ProductDetailPage = () => {
       }
     };
 
-    // Obtener productos relacionados
-    const getRelatedProducts = async () => {
+    // Obtener todos los productos para mostrar en el carrusel
+    const getAllProducts = async () => {
       try {
-        const response = await fetchRelatedProducts(id);
-        setRelatedProducts(response.data);
+        const response = await fetchProductos();
+        setAllProducts(response.data);
       } catch (error) {
-        console.error('Error al obtener los productos relacionados:', error);
+        console.error('Error al obtener todos los productos:', error);
       }
     };
 
     getProduct();
-    getRelatedProducts();
+    getAllProducts();
   }, [id]);
 
   // Verificar si el producto ya está en el carrito
@@ -66,7 +67,7 @@ const ProductDetailPage = () => {
     autoplay: true, // Activar el autoplay
     autoplaySpeed: 3000,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: 4,
     slidesToScroll: 1,
     responsive: [
       {
@@ -150,13 +151,15 @@ const ProductDetailPage = () => {
         <p className="text-white">{product.descripcion}</p>
       </div>
 
-      {/* Carrusel de productos relacionados */}
+      
+
+      {/* Carrusel de todos los productos */}
       <div className="mt-12">
-        <h2 className="text-2xl text-white font-bold mb-4">Productos Relacionados</h2>
+        <h2 className="text-2xl text-white font-bold mb-4">Otros Productos</h2>
         <Slider {...settings}>
-          {relatedProducts.map((relatedProduct, index) => (
-            <div key={relatedProduct.producto_id || index} className="px-2">
-              <ProductCard product={relatedProduct} />
+          {allProducts.map((product) => (
+            <div key={product.producto_id} className="px-2">
+              <ProductCard product={product} />
             </div>
           ))}
         </Slider>

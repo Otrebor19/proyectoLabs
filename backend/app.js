@@ -1,62 +1,52 @@
+const cookieParser = require('cookie-parser');
 const express = require('express');
-const cors = require('cors');// Importa el paquete cors
+const cors = require('cors');
 const app = express();
 
-// Configura CORS para permitir solicitudes desde el frontend
+// Configurar CORS para permitir solicitudes desde el frontend
 const corsOptions = {
-  origin: 'http://localhost:3001', // Asegúrate de que sea el origen correcto de tu frontend
-  credentials: true, // Esto es necesario para permitir las credenciales (cookies, tokens, etc.)
+  origin: 'http://localhost:3001', // Dirección del frontend
+  credentials: true, // Permitir el uso de cookies y credenciales
 };
+app.use(cors(corsOptions)); // Aplicar CORS primero
 
-app.use(cors(corsOptions));
-// Middlewares y rutas
-app.use(express.json());
-
-const carritoRoutes = require('./routes/carritoRoutes');
-app.use('/api/carrito', carritoRoutes);
-// Ruta para obtener el carrito del usuario autenticado
-
-
-// Importar rutas
-const checkoutRoutes = require('./routes/checkoutRoutes'); // Importar las rutas de checkout
-app.use('/api', checkoutRoutes); // Aquí es donde usas las rutas de checkout
-
-
-app.use('/public', express.static('public'));
-// Importar las rutas de la API
-const productosRoutes = require('./routes/productosRoutes');
-app.use('/api/', productosRoutes);
-
-const categoriasRouter = require('./routes/categorias');
-app.use('/api/categorias', categoriasRouter);
-
-// Usar las rutas de clientes
-const clienteRoutes = require('./routes/clienteRoutes');
-app.use('/api/clientes', clienteRoutes);
-
-const productRoutes = require('./routes/productRoutes'); // Importar tus rutas
-app.use(productRoutes);
-
-const tallasRoutes = require('./routes/tallasRoutes');
-app.use('/api/tallas', tallasRoutes);
-
-
-// Importar las rutas de login
-const loginRoutes = require('./routes/loginRoutes'); // Para la autenticación/login
-app.use('/api/auth', loginRoutes); // Rutas del login bajo "/api/auth"
-
-// Importar las rutas de tallas de productos
-const productoTallaRoutes = require('./routes/productoTallaRoutes');
-app.use('/api/producto_talla', productoTallaRoutes); // Montar las rutas
-
-
-const cookieParser = require('cookie-parser');
+// Middleware para el análisis de cookies
 app.use(cookieParser());
 
+// Middlewares para analizar el cuerpo de la solicitud
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-
+// Importar rutas
+const carritoRoutes = require('./routes/carritoRoutes');
+const checkoutRoutes = require('./routes/checkoutRoutes');
+const productosRoutes = require('./routes/productosRoutes');
+const categoriasRouter = require('./routes/categorias');
+const clienteRoutes = require('./routes/clienteRoutes');
+const productRoutes = require('./routes/productRoutes');
+const tallasRoutes = require('./routes/tallasRoutes');
+const loginRoutes = require('./routes/loginRoutes');
+const productoTallaRoutes = require('./routes/productoTallaRoutes');
 const tokenRoutes = require('./routes/tokenRoutes');
-app.use('/api/tokens', tokenRoutes); 
+
+// Usar rutas
+app.use('/api', carritoRoutes);
+app.use('/api', checkoutRoutes);
+app.use('/api/', productosRoutes);
+app.use('/api/categorias', categoriasRouter);
+app.use('/api/clientes', clienteRoutes);
+app.use(productRoutes);
+app.use('/api/tallas', tallasRoutes);
+app.use('/api/auth', loginRoutes);
+app.use('/api/producto_talla', productoTallaRoutes);
+app.use('/api/tokens', tokenRoutes);
+
+// Middleware de autenticación solo para las rutas protegidas (aplícalo según sea necesario)
+const authMiddleware = require('./middlewares/authMiddleware');
+app.use('/api/carrito', authMiddleware, carritoRoutes); // Aplicar el middleware a las rutas de carrito si necesitas protegerlas
+
+// Rutas para archivos públicos
+app.use('/public', express.static('public'));
 
 // Inicia el servidor
 const PORT = process.env.PORT || 3000;

@@ -1,50 +1,74 @@
-// Obtener el carrito de localStorage
-export const getCart = () => {
-  return JSON.parse(localStorage.getItem('cart')) || [];
-};
+import axios from 'axios';
 
-// Guardar el carrito en localStorage
-const saveCart = (cart) => {
-  localStorage.setItem('cart', JSON.stringify(cart));
-};
-
-// Agregar un producto al carrito
-// Agregar un producto al carrito
-// Agregar un producto al carrito
-export const addToCart = (product) => {
-  let cart = getCart();
-  const existingProduct = cart.find(item => item.unique_id === product.unique_id);
-
-  if (existingProduct) {
-    existingProduct.quantity += 1;
-  } else {
-    cart.push({ ...product, quantity: 1 });
+// Obtener el carrito del backend
+export const getCart = async () => {
+  try {
+    const response = await axios.get('http://localhost:3000/api/carrito', {
+      withCredentials: true, // Asegúrate de que las credenciales (cookies) se envíen
+    });
+    if (response.status === 200) {
+      return response.data;
+    }
+  } catch (error) {
+    console.error('Error fetching cart:', error);
   }
+  return [];
+};
 
-  saveCart(cart); // Reutilizamos la función para guardar el carrito
+// Agregar un producto al carrito
+export const addToCart = async (product, cantidad = 1) => {
+  try {
+    const response = await axios.post(
+      'http://localhost:3000/api/carrito/add',
+      { productoId: product.PRODUCTO_ID, cantidad },
+      {
+        withCredentials: true, // Esto permite que las cookies se envíen
+      }
+    );
+    
+
+    if (response.status === 200 || response.status === 201) {
+      console.log('Producto añadido al carrito correctamente');
+    }
+  } catch (error) {
+    console.error('Error adding product to cart:', error);
+  }
 };
 
 // Eliminar un producto del carrito
-export const removeFromCart = (uniqueId) => {
-  let cart = getCart();
-  cart = cart.filter(item => item.unique_id !== uniqueId);
-  saveCart(cart); // Reutilizamos la función para guardar el carrito
+export const removeFromCart = async (productoId) => {
+  try {
+    const response = await axios.post(
+      'http://localhost:3000/api/carrito/remove',
+      { productoId },
+      {
+        withCredentials: true, // Asegúrate de que las credenciales (cookies) se envíen
+      }
+    );
+
+    if (response.status === 200) {
+      console.log('Producto eliminado del carrito correctamente');
+    }
+  } catch (error) {
+    console.error('Error removing product from cart:', error);
+  }
 };
 
-
-
 // Actualizar la cantidad de un producto en el carrito
-export const updateCart = (uniqueId, quantity) => {
-  let cart = getCart();
-  const product = cart.find(item => item.unique_id === uniqueId);
+export const updateCart = async (uniqueId, quantity) => {
+  try {
+    const response = await axios.put(
+      'http://localhost:3000/api/carrito/update',
+      { productoId: uniqueId, cantidad: quantity },
+      {
+        withCredentials: true, // Asegúrate de que las credenciales (cookies) se envíen
+      }
+    );
 
-  if (product) {
-    if (quantity > 0) {
-      product.quantity = quantity; // Actualizar la cantidad si es mayor que 0
-    } else {
-      cart = cart.filter(item => item.unique_id !== uniqueId); // Eliminar si la cantidad es 0
+    if (response.status === 200) {
+      console.log('Cantidad del producto actualizada correctamente');
     }
+  } catch (error) {
+    console.error('Error updating product in cart:', error);
   }
-
-  saveCart(cart); // Reutilizamos la función para guardar el carrito
 };
