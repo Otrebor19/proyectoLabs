@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { fetchTallas } from '../services/api'; // Importar la función de la API correctamente
+import { fetchTallas, fetchGeneros } from '../services/api';
 import axios from 'axios';
-import {  } from 'react-router-dom';
 
 const ProductFormComponent = ({ product, onCancel }) => {
   
@@ -13,11 +12,14 @@ const ProductFormComponent = ({ product, onCancel }) => {
     marca: '',
     stock: '',
     imagen_url: '',
+    genero_id: '', // Campo para el género
   });
 
   const [tallas, setTallas] = useState([]);
+  const [generos, setGeneros] = useState([]); // Estado para almacenar los géneros
   const [selectedTallas, setSelectedTallas] = useState([]);
 
+  // Cargar datos iniciales (producto, tallas, géneros)
   useEffect(() => {
     if (product) {
       setFormData({
@@ -28,21 +30,23 @@ const ProductFormComponent = ({ product, onCancel }) => {
         marca: product.MARCA || '',
         stock: product.STOCK || '',
         imagen_url: product.IMAGEN_URL || '',
+        genero_id: product.GENERO_ID || '', // Asignar el género si el producto ya tiene uno
       });
     }
 
-    // Obtener las tallas disponibles
-    const getTallas = async () => {
+    const loadData = async () => {
       try {
-        const response = await fetchTallas();
-        setTallas(response);
+        const tallasResponse = await fetchTallas();
+        setTallas(tallasResponse);
+
+        const generosResponse = await fetchGeneros();
+        setGeneros(generosResponse.data); // Asumir que `fetchGeneros` devuelve `data`
       } catch (error) {
-        console.error('Error al obtener las tallas:', error);
-        setTallas([]); // Asegurarse de que tallas siempre tiene un valor (incluso vacío) para evitar errores
+        console.error('Error al cargar tallas o géneros:', error);
       }
     };
 
-    getTallas();
+    loadData();
   }, [product]);
 
   const handleChange = (e) => {
@@ -74,11 +78,9 @@ const ProductFormComponent = ({ product, onCancel }) => {
 
   const handleSave = async (productData, tallas) => {
     try {
-      // Hacer la solicitud para guardar el producto
       const response = await axios.post('http://localhost:3000/api/productos', productData);
-      const productoId = response.data.productoId; // Suponiendo que obtienes el ID del producto en la respuesta
+      const productoId = response.data.productoId;
 
-      // Hacer la solicitud para guardar las tallas del producto
       if (tallas && tallas.length > 0) {
         await axios.post('http://localhost:3000/api/producto_talla', {
           producto_id: productoId,
@@ -87,12 +89,13 @@ const ProductFormComponent = ({ product, onCancel }) => {
       }
 
       alert('Producto añadido correctamente con tallas');
-      window.location.reload(); // Recargar la página después de añadir el producto
+      window.location.reload();
     } catch (error) {
       console.error('Error al guardar el producto y las tallas:', error);
       alert('Error al guardar el producto y las tallas');
     }
   };
+
   return (
     <form onSubmit={handleSubmit} className="w-full  max-w-lg mx-auto bg-white p-6 shadow-md rounded-md">
       <div className="mb-4">
@@ -170,6 +173,30 @@ const ProductFormComponent = ({ product, onCancel }) => {
           className="mt-1 p-2 w-full border border-gray-300 rounded-md"
         />
       </div>
+
+    {/* Campo para seleccionar el género */}
+<div className="mb-4">
+  <label className="block text-sm font-medium text-gray-700">Género</label>
+  <select
+    name="genero_id"
+    value={formData.genero_id}
+    onChange={handleChange}
+    className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+    required
+  >
+    <option value="">Seleccione un género</option>
+    {generos && generos.length > 0 ? (
+      generos.map((genero) => (
+        <option key={genero.GENERO_ID || genero.genero_id} value={genero.GENERO_ID || genero.genero_id}>
+          {genero.NOMBRE || genero.nombre_genero}
+        </option>
+      ))
+    ) : (
+      <option value="">No hay géneros disponibles</option>
+    )}
+  </select>
+</div>
+
       <div className="mb-4">
         <h3 className="text-lg font-bold text-gray-700">Tallas y Cantidades</h3>
         {selectedTallas.map((talla, index) => (

@@ -1,7 +1,7 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { XIcon } from '@heroicons/react/outline';
-import { useNavigate } from 'react-router-dom';
-import { CartContext } from '../context/CartContext';
+import React, { useContext, useState, useEffect } from "react";
+import { XIcon } from "@heroicons/react/outline";
+import { useNavigate } from "react-router-dom";
+import { CartContext } from "../context/CartContext";
 
 // Componente de Alerta
 const Alert = ({ message, onClose }) => {
@@ -20,11 +20,11 @@ const Alert = ({ message, onClose }) => {
 };
 
 const CartModal = ({ isCartOpen, toggleCart }) => {
-  const { cartItems, removeFromCart } = useContext(CartContext);
+  const { cartItems, removeFromCart } = useContext(CartContext); // Obtiene cartItems y removeFromCart desde el contexto
   const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate();
 
-  // Depuración: Verifica el contenido del carrito
+  // Verifica el contenido del carrito cuando se actualiza
   useEffect(() => {
     console.log("Contenido del carrito:", cartItems);
   }, [cartItems]);
@@ -32,7 +32,7 @@ const CartModal = ({ isCartOpen, toggleCart }) => {
   // Función para redirigir a la página del carrito
   const handleViewCart = () => {
     toggleCart();
-    navigate('/cart');
+    navigate("/cart");
   };
 
   // Función para manejar el botón de "Proceder con el Pago"
@@ -42,19 +42,19 @@ const CartModal = ({ isCartOpen, toggleCart }) => {
       return;
     }
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     if (token) {
-      navigate('/checkout');
+      navigate("/checkout");
     } else {
-      navigate('/login');
+      navigate("/login");
     }
   };
 
   return (
     <div
       className={`fixed shadow-md shadow-white inset-y-0 right-0 w-80 backdrop-blur-sm bg-transparent z-50 transform transition-transform duration-300 ${
-        isCartOpen ? 'translate-x-0' : 'translate-x-full'
+        isCartOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
       {/* Botón de cerrar en la esquina superior derecha */}
@@ -66,44 +66,50 @@ const CartModal = ({ isCartOpen, toggleCart }) => {
       </button>
 
       <div className="p-6 flex flex-col h-full">
-        <h2 className="text-[32px] text-white font-sans mb-4">Carrito de Compras</h2>
+        <h2 className="text-[32px] text-white font-sans mb-4">
+          Carrito de Compras
+        </h2>
 
         {/* Lista de productos en el carrito */}
         <div className="mb-4 space-y-4 flex-grow">
           {cartItems.length > 0 ? (
-            cartItems.map((product) => {
-              // Depuración: Verificar cada producto que se muestra en el carrito
-              console.log("Producto:", product);
-
-              return (
-                <div key={product.PRODUCTO_ID} className="flex justify-between items-center">
-                  <div className="flex items-center">
-                    {product.IMAGEN_URL && (
-                      <img
-                        src={product.IMAGEN_URL}
-                        alt={product.NOMBRE}
-                        className="w-10 h-10 rounded-lg mr-2"
-                      />
-                    )}
-                    <div>
-                      <h3 className="text-[14px] text-left text-white">{product.NOMBRE}</h3>
-                      <p className="text-sm text-white text-justify">
-                        Cantidad: {product.cantidad}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="text-[14px] font-bold text-white">{product.PRECIO} $</span>
-                    <button
-                      onClick={() => removeFromCart(product.producto_id)}
-                      className="ml-2 text-red-500 hover:text-red-700"
-                    >
-                      <XIcon className="h-5 w-5" />
-                    </button>
+            cartItems.map((product) => (
+              <div
+                key={product.PRODUCTO_ID}
+                className="flex justify-between items-center"
+              >
+                {" "}
+                {/* Usa PRODUCTO_ID como key */}
+                <div className="flex items-center">
+                  {product.IMAGEN_URL && (
+                    <img
+                      src={product.IMAGEN_URL}
+                      alt={product.NOMBRE}
+                      className="w-10 h-10 rounded-lg mr-2"
+                    />
+                  )}
+                  <div>
+                    <h3 className="text-[14px] text-left text-white">
+                      {product.NOMBRE}
+                    </h3>
+                    <p className="text-sm text-white text-justify">
+                      Cantidad: {product.cantidad}
+                    </p>
                   </div>
                 </div>
-              );
-            })
+                <div className="flex items-center">
+                  <span className="text-[14px] font-bold text-white">
+                    {product.PRECIO} $
+                  </span>
+                  <button
+                    onClick={() => removeFromCart(product.PRODUCTO_ID)}
+                    className="ml-2 text-red-500 hover:text-red-700"
+                  >
+                    <XIcon className="h-5 w-5" />
+                  </button>
+                </div>
+              </div>
+            ))
           ) : (
             <p className="text-white">El carrito está vacío.</p>
           )}

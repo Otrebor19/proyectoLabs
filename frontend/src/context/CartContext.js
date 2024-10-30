@@ -1,38 +1,75 @@
-import React, { createContext, useState, useEffect } from 'react';
-import { getCart, addToCart as addProductToCart, removeFromCart as removeProductFromCart } from '../utils/cartUtils';
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import { getCart, addToCart, removeFromCart } from '../utils/cartUtils';
+import { UserContext } from '../context/UserContext';
 
-// Crear el contexto del carrito
 export const CartContext = createContext();
 
-// Proveedor del carrito para compartir el estado globalmente
 export const CartProvider = ({ children }) => {
+  const { user } = useContext(UserContext);
   const [cartItems, setCartItems] = useState([]);
 
-  // Cargar el carrito desde la base de datos cuando la aplicación se monta
+  // Cargar el carrito desde `localStorage` al montar el componente o cuando cambia el usuario
   useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        const cart = await getCart();
-        setCartItems(cart);
-      } catch (error) {
-        console.error('Error fetching cart:', error);
+    const loadCartFromLocalStorage = () => {
+      if (user) {
+        const storedCart = localStorage.getItem(`cart_${user.id}`);
+        if (storedCart) {
+          console.log("Cargando carrito desde localStorage");
+          setCartItems(JSON.parse(storedCart));
+        } else {
+          console.log("No hay carrito en localStorage para este usuario");
+        }
       }
     };
+    loadCartFromLocalStorage();
+  }, [user]); // Agrega `user` como dependencia
+  
 
-    fetchCart();
-  }, []);
+  // Sincronizar el carrito con el backend al iniciar sesión si no hay carrito en `localStorage`
+  useEffect(() => {
+    const loadCartFromBackend = async () => {
+      if (user && !localStorage.getItem(`cart_${user.id}`)) {
+        try {
+          console.log("Cargando carrito desde el backend");
+          const backendCart = await getCart();
+          setCartItems(backendCart);
+          localStorage.setItem(`cart_${user.id}`, JSON.stringify(backendCart));
+        } catch (error) {
+          console.error('Error al cargar el carrito desde el backend:', error);
+        }
+      }
+    };
+    loadCartFromBackend();
+  }, [user]);
 
-  // Función para agregar productos al carrito
-  const addToCart = async (product, cantidad = 1) => {
+  // Guardar el carrito en `localStorage` cada vez que `cartItems` cambie
+  useEffect(() => {
+    if (user) {
+      console.log("Guardando carrito en localStorage");
+      localStorage.setItem(`cart_${user.id}`, JSON.stringify(cartItems));
+    }
+  }, [cartItems, user]);
+
+  const addToCartHandler = async (product, cantidad = 1) => {
     try {
-      await addProductToCart(product, cantidad);
+      console.log('Datos enviados a addToCart:', {
+        PRODUCTO_ID: product.PRODUCTO_ID,
+        cantidad,
+        cliente_id: user.id,
+        sesion_id: user.sesion_id,
+      });
+      await addToCart({
+        PRODUCTO_ID: product.PRODUCTO_ID,
+        cantidad,
+        cliente_id: user.id,
+        sesion_id: user.sesion_id,
+      });
+  
       setCartItems((prevItems) => {
-        const existingProduct = prevItems.find(
-          (item) => item.producto_id === product.PRODUCTO_ID
-        );
+        const existingProduct = prevItems.find((item) => item.PRODUCTO_ID === product.PRODUCTO_ID);
         if (existingProduct) {
           return prevItems.map((item) =>
-            item.producto_id === product.PRODUCTO_ID
+            item.PRODUCTO_ID === product.PRODUCTO_ID
               ? { ...item, cantidad: item.cantidad + cantidad }
               : item
           );
@@ -41,54 +78,37 @@ export const CartProvider = ({ children }) => {
         }
       });
     } catch (error) {
-      console.error('Error adding product to cart:', error);
+      console.error('Error añadiendo producto al carrito:', error);
     }
   };
+  
+  
 
-  // Función para eliminar productos del carrito
-  const removeFromCart = async (productoId) => {
+  const removeFromCartHandler = async (productoId) => {
     try {
-      await removeProductFromCart(productoId);
-      setCartItems((prevItems) =>
-        prevItems.filter((item) => item.producto_id !== productoId)
-      );
+      await removeFromCart(productoId);
+      setCartItems((prevItems) => prevItems.filter((item) => item.PRODUCTO_ID !== productoId));
     } catch (error) {
-      console.error('Error removing product from cart:', error);
+      console.error('Error eliminando producto del carrito:', error);
     }
   };
 
-  // Función para vaciar el carrito
   const clearCart = () => {
     setCartItems([]);
-    // Si usas almacenamiento local o en el servidor, limpia aquí también
-    // Por ejemplo: localStorage.removeItem('cart');
-  };
-
-  // Nueva función para actualizar la cantidad de un producto específico
-  const updateProductQuantity = (productoId, newQuantity) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.producto_id === productoId
-          ? { ...item, cantidad: newQuantity }
-          : item
-      )
-    );
-  };
-
-  // Función para contar el total de productos en el carrito
-  const getTotalItemsInCart = () => {
-    return cartItems.reduce((total, item) => total + item.cantidad, 0);
+    if (user) {
+      localStorage.removeItem(`cart_${user.id}`);
+      console.log("Carrito eliminado de localStorage al cerrar sesión");
+    }
   };
 
   return (
     <CartContext.Provider
       value={{
         cartItems,
-        addToCart,
-        removeFromCart,
+        addToCart: addToCartHandler,
+        removeFromCart: removeFromCartHandler,
         clearCart,
-        updateProductQuantity,
-        getTotalItemsInCart,
+        getTotalItemsInCart: () => cartItems.reduce((total, item) => total + item.cantidad, 0),
       }}
     >
       {children}

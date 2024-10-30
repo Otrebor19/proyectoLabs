@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importa useNavigate
 import { registerCliente } from '../services/api';
+import SuccessModal from '../components/SuccessModal';
 
 const RegisterPage = () => {
-  const navigate = useNavigate(); // Define el hook navigate
-
-  // Estados para los campos del formulario
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nombre: '',
     apellido: '',
@@ -15,10 +14,9 @@ const RegisterPage = () => {
     confirmPassword: '',
   });
 
-  // Estado para controlar si mostrar o no las contraseñas
   const [showPassword, setShowPassword] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para el modal de éxito
 
-  // Manejar cambios en los campos del formulario
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -26,23 +24,18 @@ const RegisterPage = () => {
     });
   };
 
-  // Alternar visibilidad de la contraseña
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Datos a enviar:', formData);
-
-    // Validación de las contraseñas
     if (formData.contraseña !== formData.confirmPassword) {
       alert('Las contraseñas no coinciden');
       return;
     }
 
     try {
-      // Enviar los datos al backend
       await registerCliente({
         nombre: formData.nombre,
         apellido: formData.apellido,
@@ -51,16 +44,19 @@ const RegisterPage = () => {
         telefono: formData.telefono,
       });
 
-      alert('Cliente registrado con éxito');
-      
-      // Redirigir a la página de inicio de sesión
-      navigate('/login'); // Aquí redirigimos después del registro exitoso
+      setIsModalOpen(true); // Muestra el modal al registrarse con éxito
 
     } catch (error) {
       console.error('Error al registrar el cliente:', error);
       alert('Hubo un error al registrar el cliente');
     }
   };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    navigate('/login'); // Redirige a la página de inicio de sesión
+  };
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-custom-gradient">
@@ -194,6 +190,16 @@ const RegisterPage = () => {
           </p>
         </div>
       </div>
+
+ {/* Modal de éxito personalizado para el registro */}
+ {isModalOpen && (
+        <SuccessModal
+          onClose={handleCloseModal}
+          title="¡Registro Exitoso!"
+          message="Te has registrado correctamente. Redirigiendo..."
+        />
+      )}
+
     </div>
   );
 };

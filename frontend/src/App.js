@@ -1,7 +1,9 @@
 import React from 'react';
 import Footer from './components/Footer';
 import Header from './components/Header';
+import { UserProvider } from './context/UserContext';
 import { CartProvider } from './context/CartContext';
+
 import MainSection from './components/MainSection';
 import GeneroSection from './components/GeneroSection';
 import DashboardPage from './pages/DashboardPage';
@@ -21,9 +23,13 @@ function App() {
   const hideHeaderRoutes = ['/register', '/login', '/checkout', '/dashboard']; // Rutas donde no quieres mostrar el header
   const hideFooterRoutes = ['/register', '/login', '/checkout', '/dashboard'];
   return (
-    <CartProvider>
+    
+    
     <div className="App  bg-custom-gradient">
       {/* Mostrar el header solo si la ruta actual no está en hideHeaderRoutes */}
+
+      <UserProvider>
+        <CartProvider>
       {!hideHeaderRoutes.includes(location.pathname) && <Header />}
       
       <Routes>
@@ -46,8 +52,11 @@ function App() {
         <Route path="/dashboard" element={<DashboardPage />} /> 
       </Routes>
       {!hideFooterRoutes.includes(location.pathname) && <Footer />}
+       </CartProvider>
+      </UserProvider>
     </div>
-    </CartProvider>
+   
+    
   );
 }
 

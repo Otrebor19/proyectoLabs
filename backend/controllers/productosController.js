@@ -21,6 +21,7 @@ const getProducts = async (req, res) => {
       FECHA_CREACION: row[10],
       FECHA_ACTUALIZACION: row[11],
       IMAGEN_URL: row[12],
+      GENERO_ID: row[13],
     }));
 
     res.status(200).json(products);
@@ -65,17 +66,18 @@ const getProductById = async (req, res) => {
 };
 
 // Añadir un nuevo producto
+// Añadir un nuevo producto
 const addProduct = async (req, res) => {
   let connection;
   try {
     connection = await connectToDB();
-    const { nombre, descripcion, precio, categoria_id, marca, stock, imagen_url } = req.body;
+    const { nombre, descripcion, precio, categoria_id, marca, stock, imagen_url, genero_id } = req.body; // Incluir genero_id
 
     // Insertar el producto en la tabla PRODUCTO
     const result = await connection.execute(
-      `INSERT INTO PRODUCTO (PRODUCTO_ID, NOMBRE, DESCRIPCION, PRECIO, CATEGORIA_ID, MARCA, STOCK, IMAGEN_URL, FECHA_CREACION, FECHA_ACTUALIZACION)
-       VALUES (producto_seq.NEXTVAL, :nombre, :descripcion, :precio, :categoria_id, :marca, :stock, :imagen_url, SYSDATE, SYSDATE)`,
-      [nombre, descripcion, precio, categoria_id, marca, stock, imagen_url],
+      `INSERT INTO PRODUCTO (PRODUCTO_ID, NOMBRE, DESCRIPCION, PRECIO, CATEGORIA_ID, MARCA, STOCK, IMAGEN_URL, GENERO_ID, FECHA_CREACION, FECHA_ACTUALIZACION)
+       VALUES (producto_seq.NEXTVAL, :nombre, :descripcion, :precio, :categoria_id, :marca, :stock, :imagen_url, :genero_id, SYSDATE, SYSDATE)`,
+      [nombre, descripcion, precio, categoria_id, marca, stock, imagen_url, genero_id], // Agregar genero_id a los valores
       { autoCommit: true }
     );
 
@@ -83,7 +85,7 @@ const addProduct = async (req, res) => {
     const productoIdResult = await connection.execute(
       `SELECT producto_seq.CURRVAL as productoId FROM dual`
     );
-    const productoId = productoIdResult.rows[0][0]; // Asegúrate de obtener el ID del producto recién insertado
+    const productoId = productoIdResult.rows[0][0];
 
     res.status(201).json({ message: 'Producto añadido correctamente', productoId });
   } catch (error) {
@@ -108,11 +110,12 @@ const updateProduct = async (req, res) => {
   try {
     connection = await connectToDB();
     const { id } = req.params;
-    const { nombre, descripcion, precio, categoria_id, marca, stock, imagen_url } = req.body;
+    const { nombre, descripcion, precio, categoria_id, marca, stock, imagen_url, genero_id } = req.body; // Incluir genero_id
+
     await connection.execute(
-      `UPDATE PRODUCTO SET NOMBRE = :nombre, DESCRIPCION = :descripcion, PRECIO = :precio, CATEGORIA_ID = :categoria_id, MARCA = :marca, STOCK = :stock, IMAGEN_URL = :imagen_url, FECHA_ACTUALIZACION = SYSDATE
+      `UPDATE PRODUCTO SET NOMBRE = :nombre, DESCRIPCION = :descripcion, PRECIO = :precio, CATEGORIA_ID = :categoria_id, MARCA = :marca, STOCK = :stock, IMAGEN_URL = :imagen_url, GENERO_ID = :genero_id, FECHA_ACTUALIZACION = SYSDATE
        WHERE PRODUCTO_ID = :id`,
-      [nombre, descripcion, precio, categoria_id, marca, stock, imagen_url, id],
+      [nombre, descripcion, precio, categoria_id, marca, stock, imagen_url, genero_id, id], // Incluir genero_id en los valores
       { autoCommit: true }
     );
     res.status(200).json({ message: 'Producto actualizado correctamente' });

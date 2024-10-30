@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react';
-import logo from '../assets/logo.png'; // Asegúrate de que tu logo esté en la carpeta assets
-import { ShoppingCartIcon } from '@heroicons/react/outline'; // Importar íconos
-import CartModal from './CartModal'; // Importar el modal del carrito
+import logo from '../assets/logo.png';
+import { ShoppingCartIcon, UserIcon } from '@heroicons/react/outline';
+import CartModal from './CartModal';
 import { CartContext } from '../context/CartContext';
+import { UserContext } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 
 const Header = ({ removeFromCart }) => {
-  const [isOpen, setIsOpen] = useState(false); // Estado para controlar el menú desplegable
-  const [isCartOpen, setIsCartOpen] = useState(false); // Estado para controlar el modal del carrito
-  const [cartItemsCount, setCartItemsCount] = useState(0); // Estado para contar los productos en el carrito
-  const { getTotalItemsInCart } = useContext(CartContext);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado para verificar si el usuario está autenticado
+  const { user, logout } = useContext(UserContext);
+  const { cartItems, getTotalItemsInCart, clearCart } = useContext(CartContext); // Obtiene el usuario y logout del contexto
+  const [isOpen, setIsOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cartItemsCount, setCartItemsCount] = useState(0);
+  
   const navigate = useNavigate();
 
   const toggleMenu = () => {
@@ -26,21 +28,12 @@ const Header = ({ removeFromCart }) => {
     return cart.reduce((total, item) => total + item.quantity, 0);
   };
 
-  // Verificar si el usuario está autenticado verificando el token
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
-  }, []);
-
   // Función para manejar el cierre de sesión
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Eliminar el token de localStorage
-    setIsAuthenticated(false); // Actualizar el estado de autenticación
-    navigate('/'); // Redirigir al usuario a la página de inicio de sesión
+    logout();
+    clearCart(); // Llama a logout del contexto para actualizar el estado de usuario
+    navigate('/');
+    window.location.reload(); // Redirige a la página de inicio de sesión
   };
 
   useEffect(() => {
@@ -64,13 +57,7 @@ const Header = ({ removeFromCart }) => {
 
             {/* Botón de hamburguesa para pantallas pequeñas */}
             <button className="text-white md:hidden focus:outline-none" onClick={toggleMenu}>
-              <svg
-                className="w-8 h-8"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
               </svg>
             </button>
@@ -81,15 +68,19 @@ const Header = ({ removeFromCart }) => {
             <img src={logo} alt="Logo" className="h-full w-auto object-contain" />
           </div>
 
-          {/* Sección derecha: Barra de búsqueda, carrito y login/logout */}
+          {/* Sección derecha: Icono de usuario, nombre, carrito y cerrar sesión */}
           <div className="flex items-center space-x-4">
-            
-
-            {/* Mostrar botón de "Iniciar sesión" o "Cerrar sesión" según el estado de autenticación */}
-            {isAuthenticated ? (
-              <button onClick={handleLogout} className="font-sans text-xl md:text-2xl text-white hover:text-thov">
-                Cerrar sesión
-              </button>
+            {/* Icono de usuario y nombre */}
+            {user ? (
+              <div className="flex items-center space-x-2">
+                <UserIcon className="h-6 w-6 text-white" />
+                <span className="font-sans text-xl md:text-2xl text-white">
+                  {user.nombre}
+                </span>
+                <button className="font-sans text-xl md:text-2xl text-white hover:text-thov ml-4" onClick={handleLogout}>
+                  Cerrar sesión
+                </button>
+              </div>
             ) : (
               <a href='/login' className="font-sans text-xl md:text-2xl text-white hover:text-thov">
                 Iniciar sesión
@@ -100,7 +91,7 @@ const Header = ({ removeFromCart }) => {
             <button className="relative" onClick={toggleCart}>
               <ShoppingCartIcon className="h-8 w-8 text-white hover:text-green-400" />
               <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full h-4 w-4 flex items-center justify-center text-xs">
-                {getTotalItemsInCart()} {/* Mostrar el número total de productos en el carrito */}
+                {getTotalItemsInCart()}
               </span>
             </button>
           </div>
@@ -118,8 +109,8 @@ const Header = ({ removeFromCart }) => {
         </div>
       </header>
 
-      {/* Importar los modales */}
-      <CartModal isCartOpen={isCartOpen} toggleCart={toggleCart} cart={JSON.parse(localStorage.getItem('cart')) || []} removeFromCart={removeFromCart} />
+      {/* Modal del carrito */}
+      <CartModal isCartOpen={isCartOpen} toggleCart={toggleCart} cart={cartItems} removeFromCart={removeFromCart} />
     </div>
   );
 };

@@ -115,7 +115,13 @@ const CheckoutForm = ({ products, totalAmount }) => {
         {loading ? 'Procesando...' : `Pagar $${totalAmount}.00`}
       </button>
 
-      {showSuccessModal && <SuccessModal onClose={handleCloseModal} />} {/* Modal de éxito */}
+      {showSuccessModal && (
+        <SuccessModal 
+          onClose={handleCloseModal}
+          title="¡Pago Exitoso!"
+          message="Gracias por su compra. Su pago ha sido procesado correctamente."
+        />
+      )}
     </form>
   );
 };

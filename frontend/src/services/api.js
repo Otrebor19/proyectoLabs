@@ -121,6 +121,9 @@ export const fetchRelatedProducts = async (id) => {
   }
 };
 
+export const fetchGeneros = async () => {
+  return await axios.get('http://localhost:3000/api/generos'); // Ajusta el endpoint según tu configuración
+};
 
 
 // Exportar la instancia de Axios para que pueda ser utilizada si es necesario

@@ -125,7 +125,7 @@ const CartPage = () => {
 
             <div className="flex justify-between mb-2 sm:mb-4">
               <span className="text-sm sm:text-lg font-medium text-black">Total:</span>
-              <span className="text-sm sm:text-lg font-bold text-black">{calculateTotal()} BOB</span>
+              <span className="text-sm sm:text-lg font-bold text-black">{calculateTotal()} $</span>
             </div>
 
             <button

@@ -28,7 +28,7 @@ const tallasRoutes = require('./routes/tallasRoutes');
 const loginRoutes = require('./routes/loginRoutes');
 const productoTallaRoutes = require('./routes/productoTallaRoutes');
 const tokenRoutes = require('./routes/tokenRoutes');
-
+const generoRoutes = require('./routes/generoRoutes');
 // Usar rutas
 app.use('/api', carritoRoutes);
 app.use('/api', checkoutRoutes);
@@ -40,7 +40,7 @@ app.use('/api/tallas', tallasRoutes);
 app.use('/api/auth', loginRoutes);
 app.use('/api/producto_talla', productoTallaRoutes);
 app.use('/api/tokens', tokenRoutes);
-
+app.use('/api', generoRoutes)
 // Middleware de autenticación solo para las rutas protegidas (aplícalo según sea necesario)
 const authMiddleware = require('./middlewares/authMiddleware');
 app.use('/api/carrito', authMiddleware, carritoRoutes); // Aplicar el middleware a las rutas de carrito si necesitas protegerlas
